@@ -1,0 +1,7 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> morphia 1.2.4d
+    - play -> betterlogs 1.0
+
