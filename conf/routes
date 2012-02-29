@@ -2,11 +2,19 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
+
 # Home page
-GET     /                                       Application.index
+#GET     /                                       Application.index
+GET     /                                       TokenController.invalidCall()
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
+
+# example: http://localhost:9000/api/locations/discover/123/geo:59.92415298000001,10.75919532/
+# # optional params ?limit=12&uid=123
+GET 	/api/locations/discover/geo:{lat},{lng}/		SnLocationsController.discoverFsqLocations
+
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public

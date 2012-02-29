@@ -1,3 +1,27 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+
+
+# HTTP STATUS CODE detail
+http.statuscode.200= Success (upon a successful GET, PUT, or DELETE request)
+http.statuscode.201= Created (upon a successful POST request)
+http.statuscode.400= Resource Invalid (improperly-formatted request)
+http.statuscode.401= Unauthorized (incorrect or missing authentication credentials)
+http.statuscode.403= Forbidden
+http.statuscode.404= Resource Not Found (requesting a non-existent user, spot, or other resource)
+http.statuscode.405= Method Not Allowed (e.g., trying to POST to a URL that responds only to GET)
+http.statuscode.406= Not Acceptable (server can’t satisfy the Accept header specified by the client)
+http.statuscode.500= Application Error
+
+
+# errorType - errorDetail
+com.wareninja.loco.errortype.invalid_auth = LocoToken was not provided or was invalid.
+com.wareninja.loco.errortype.param_error = A required parameter was missing or a parameter was malformed. This is also used if the resource ID in the path is incorrect.
+com.wareninja.loco.errortype.endpoint_error = The requested path does not exist.
+com.wareninja.loco.errortype.not_authorized = Although authentication succeeded, the acting user is not allowed to see this information due to privacy restrictions.
+com.wareninja.loco.errortype.deprecated = Something about this request is using deprecated functionality, or the response format may be about to change.
+com.wareninja.loco.errortype.server_error = Server is currently experiencing issues.
+com.wareninja.loco.errortype.nouser = User does not exist! : %s 
+com.wareninja.loco.errortype.other = Some other type of error occurred : %s
+
