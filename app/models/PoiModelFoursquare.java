@@ -47,12 +47,20 @@ public class PoiModelFoursquare implements Serializable {
 	@SerializedName("stats")
 	public PoiStatsModelFoursquare stats;
 	
+	@SerializedName("herenow")
+	public LinkedList<PoiHerenowModelFoursquare> herenow;
+	
+	//@SerializedName("herenowCount")
+	//public Integer herenowCount;
+	
 	@Override
 	public String toString() {
 		return "PoiModelFoursquare [oid=" + oid + ", name=" + name
 				+ ", location=" + location 
 				+ ", categories="+categories
 				+ ", stats="+stats
+				//+ ", herenowCount="+herenowCount
+				+ ", herenow="+herenow
 				+ "]";
 	}
 	

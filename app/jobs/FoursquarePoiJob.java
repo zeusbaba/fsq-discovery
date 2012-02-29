@@ -31,12 +31,12 @@ import utils.LocoUtils;
  *  Author: yg@wareninja.com
  */
 
-public class FoursquareJob extends BaseJob {
+public class FoursquarePoiJob extends BaseJob {
 
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
 	private HashMap params = new HashMap();
-	public FoursquareJob() {
+	public FoursquarePoiJob() {
 		baseInit();
 	}
 	public void setReqParams(HashMap params) {
@@ -81,12 +81,18 @@ public class FoursquareJob extends BaseJob {
 	        JsonObject respPart = jsonResp.getAsJsonObject("response");
 	        JsonArray venues = respPart.getAsJsonArray("venues");
 	        JsonObject venue;
+	        PoiModelFoursquare fsqPoi = null;
 	        for (int i=0; i<venues.size(); i++) {
 	        	venue = venues.get(i).getAsJsonObject();
 	        	Logger.info("venue #%s : %s", i, venue);
 	        	
-	        	PoiModelFoursquare fsqPoi = gson.fromJson(venue, PoiModelFoursquare.class);
+	        	fsqPoi = gson.fromJson(venue, PoiModelFoursquare.class);
 	        	Logger.info("fsqPoi #%s : %s", i, fsqPoi);
+	        	
+	        	if (venue.has("hereNow")) {
+	        		fsqPoi.stats.herenowCount = venue.get("hereNow").getAsJsonObject().get("count").getAsInt();
+	        	}
+	        	
 	        	dataList.add(fsqPoi);
 	        }   
     	}

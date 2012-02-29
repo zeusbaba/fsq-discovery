@@ -32,10 +32,15 @@ public class PoiStatsModelFoursquare {
 	@SerializedName("tipCount")
 	public Integer tipCount;
 	
+	@SerializedName("herenowCount")
+	public Integer herenowCount;
+	
 	@Override
 	public String toString() {
 		return "PoiStatsModelFoursquare [checkinsCount=" + checkinsCount
-				+ ", usersCount=" + usersCount + ", tipCount=" + tipCount + "]";
+				+ ", usersCount=" + usersCount + ", tipCount=" + tipCount
+				+ ", herenowCount="+herenowCount
+				+ "]";
 	}
 	
 /*

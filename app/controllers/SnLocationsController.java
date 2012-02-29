@@ -16,7 +16,8 @@ import utils.strtotime.strtotime;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import jobs.FoursquareJob;
+import jobs.FoursquarePoiJob;
+import jobs.FoursquareUserJob;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,27 +64,42 @@ public class SnLocationsController extends ApplicationBaseController {
 		
 		Logger.info("uid, lat, lng, limit : %s, %s, %s, %s", uid, lat, lng, limit);
 		
-		
 		// using Async jobs
 		ResponseModel responseModel = new ResponseModel();
 		ResponseMeta responseMeta = new ResponseMeta();
 		LinkedList<Object> dataList = new LinkedList<Object>();
 		
-		HashMap params = new HashMap();
-		//LinkedList<Locations> resultList = new LinkedList<Locations>(); 
+		HashMap params = new HashMap(); 
 		String cacheKey = "geo:"+lat+","+lng;
 		if (!StringUtils.isEmpty(limit)) cacheKey+="|"+limit;
-		// TODO: improve record handling in cache! e.g. populate based on limit
 		
 		try { 
 			
-			params.clear();
-			if (!StringUtils.isEmpty(lat)&&!StringUtils.isEmpty(lng)) params.put("ll", lat+","+lng);
-			if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
-			FoursquareJob foursquareJob = new FoursquareJob();
-			foursquareJob.setReqParams(params);
-			dataList.addAll( (LinkedList<Object>)foursquareJob.doJobWithResult() );
+			dataList = (LinkedList<Object>) Cache.get(cacheKey);
+			if (dataList==null) {
 			
+				dataList = new LinkedList<Object>();
+				
+				params.clear();
+				if (!StringUtils.isEmpty(lat)&&!StringUtils.isEmpty(lng)) params.put("ll", lat+","+lng);
+				if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
+				FoursquarePoiJob mFoursquarePoiJob = new FoursquarePoiJob();
+				mFoursquarePoiJob.setReqParams(params);
+				dataList.addAll( (LinkedList<Object>)mFoursquarePoiJob.doJobWithResult() );
+				
+				params.clear();
+				FoursquareUserJob mFoursquareUserJob = new FoursquareUserJob();
+				mFoursquareUserJob.setReqParams(params);
+				mFoursquareUserJob.setPoiList(dataList);
+				dataList.clear();
+				dataList.addAll( (LinkedList<Object>)mFoursquareUserJob.doJobWithResult() );
+				
+				Logger.info("adding to cache!!! %s", dataList.size());
+				Cache.safeAdd(cacheKey, dataList, Play.configuration.getProperty("fsqdiscovery.cache.ttl"));
+			}
+			else {
+				Logger.info("found in cache!!! %s", dataList.size());
+			}
 			
 			response.status = Http.StatusCode.OK;
 	        responseMeta.code = response.status;
