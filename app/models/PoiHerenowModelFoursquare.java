@@ -47,6 +47,19 @@ public class PoiHerenowModelFoursquare {
 	@SerializedName("user_canonicalUrl")
 	public String user_canonicalUrl;
 	
+	@SerializedName("user_photo_hres")
+	public String user_photo_hres;
+
+	@Override
+	public String toString() {
+		return "PoiHerenowModelFoursquare [id=" + id + ", createdAt="
+				+ createdAt + ", type=" + type + ", timeZone=" + timeZone
+				+ ", user_id=" + user_id + ", user_firstName=" + user_firstName
+				+ ", user_photo=" + user_photo + ", user_gender=" + user_gender
+				+ ", user_homeCity=" + user_homeCity + ", user_canonicalUrl="
+				+ user_canonicalUrl + ", user_photo_hres=" + user_photo_hres
+				+ "]";
+	}
 	
 /*
 hereNow: {

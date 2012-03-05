@@ -7,6 +7,7 @@ import models.PoiHerenowModelFoursquare;
 import models.PoiModelFoursquare;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,6 +94,7 @@ public class FoursquareUserJob extends BaseJob {
 		        	item = items.get(i).getAsJsonObject();
 		        	Logger.info("item #%s : %s", i, item);
 		        	
+		        	hereNow = new PoiHerenowModelFoursquare();
 		        	//-hereNow = gson.fromJson(item, PoiHerenowModelFoursquare.class);
 		        	hereNow.id = item.has("id")?item.get("id").getAsString():"";
 		        	hereNow.createdAt = item.has("createdAt")?item.get("createdAt").getAsLong():0L;
@@ -106,6 +108,10 @@ public class FoursquareUserJob extends BaseJob {
 		        		hereNow.user_gender = item.has("gender")?item.get("gender").getAsString():"";
 		        		hereNow.user_homeCity = item.has("homeCity")?item.get("homeCity").getAsString():"";
 		        		hereNow.user_canonicalUrl = item.has("canonicalUrl")?item.get("canonicalUrl").getAsString():"";
+		        		
+		        		if (!StringUtils.isEmpty(hereNow.user_photo)) {
+		        			hereNow.user_photo_hres = hereNow.user_photo.replace("/userpix_thumbs/", "/userpix/");
+		        		}
 		        	}
 		        	
 		        	Logger.info("hereNow #%s : %s", i, hereNow);

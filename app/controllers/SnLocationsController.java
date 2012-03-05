@@ -83,6 +83,7 @@ public class SnLocationsController extends ApplicationBaseController {
 				params.clear();
 				if (!StringUtils.isEmpty(lat)&&!StringUtils.isEmpty(lng)) params.put("ll", lat+","+lng);
 				if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
+				params.put("radius", Play.configuration.getProperty("fsqdiscovery.discovery.API_LOCO_SEARCHDISTANCE"));
 				FoursquarePoiJob mFoursquarePoiJob = new FoursquarePoiJob();
 				mFoursquarePoiJob.setReqParams(params);
 				dataList.addAll( (LinkedList<Object>)mFoursquarePoiJob.doJobWithResult() );
