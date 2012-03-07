@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import play.Logger;
 import play.db.jpa.Model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -24,17 +25,17 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PoiCategoryModelFoursquare {
 	
-	@SerializedName("id")
+	@SerializedName("id") @Expose
 	public String oid;
-	@SerializedName("name")
+	@SerializedName("name") @Expose
 	public String name;
-	@SerializedName("pluralName")
+	@SerializedName("pluralName") @Expose
 	public String pluralName;
-	@SerializedName("shortName")
+	@SerializedName("shortName") @Expose
 	public String shortName;
-	@SerializedName("primary")
+	@SerializedName("primary") @Expose
 	public Boolean isPrimary;
-	@SerializedName("icon")
+	@SerializedName("icon") @Expose
 	public PoiCategoryIconModelFoursquare catIcon;
 	
 	public String getImgUrl() {

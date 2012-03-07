@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import play.Logger;
 import play.db.jpa.Model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -27,19 +28,19 @@ public class PoiLocationModelFoursquare {//extends BaseModel {
 	//public enum Type { VENUES, USERS };
 	//public Type type;
 	
-	@SerializedName("lat")
+	@SerializedName("lat") @Expose
 	public Double lat;
-	@SerializedName("lng")
+	@SerializedName("lng") @Expose
 	public Double lng;
-	@SerializedName("distance")
+	@SerializedName("distance") @Expose
 	public Integer distance;
-	@SerializedName("address")
+	@SerializedName("address") @Expose
 	public String address;
-	@SerializedName("city")
+	@SerializedName("city") @Expose
 	public String city;
-	@SerializedName("state")
+	@SerializedName("state") @Expose
 	public String state;
-	@SerializedName("postalCode")
+	@SerializedName("postalCode") @Expose
 	public String postalCode;
 	
 	@Override

@@ -93,12 +93,18 @@ public class FoursquarePoiJob extends BaseJob {
 	        		fsqPoi.stats.herenowCount = venue.get("hereNow").getAsJsonObject().get("count").getAsInt();
 	        	}
 	        	
-	        	if (fsqPoi!=null && fsqPoi.location!=null) {
-	        		fsqPoi.lat = fsqPoi.location.lat;
-	        		fsqPoi.lng = fsqPoi.location.lng;
-	        		fsqPoi.updateLatlng();
+	        	
+		        try {	
+		        	if (fsqPoi!=null && fsqPoi.location!=null) {
+		        		fsqPoi.lat = fsqPoi.location.lat;
+		        		fsqPoi.lng = fsqPoi.location.lng;
+		        		fsqPoi.updateLatlng();
+		        	}
+		        	fsqPoi.save();
+		        }
+	        	catch (Exception ex) {
+	        		Logger.warn("Exception while persisting %s | %s", fsqPoi, ex.toString());
 	        	}
-	        	fsqPoi.save();
 	        	
 	        	dataList.add(fsqPoi);
 	        }   

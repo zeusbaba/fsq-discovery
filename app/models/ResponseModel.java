@@ -1,5 +1,7 @@
 package models;
 
+import com.google.gson.annotations.Expose;
+
 import play.db.jpa.Model;
 
 /***
@@ -10,6 +12,9 @@ import play.db.jpa.Model;
  */
 
 public class ResponseModel extends Model {
+	
+	@Expose
     public ResponseMeta meta;
+	@Expose
     public Object data;
 }

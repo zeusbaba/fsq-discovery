@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import play.Logger;
@@ -39,6 +41,23 @@ import play.Logger;
 public class LocoUtils {
 
 	static final String TAG = "LocoUtils";
+	
+	public static Gson getGson() {
+		return new GsonBuilder()
+		    .excludeFieldsWithModifiers( new int[] { 
+		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		} )
+		    .excludeFieldsWithoutExposeAnnotation()
+		    .create();
+	}
+	public static Gson getGsonSimple() {
+		return new GsonBuilder()
+		    .excludeFieldsWithModifiers( new int[] { 
+		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		} )
+		    .create();
+	}
+	
 	
 	/*
 	public static LinkedList<Locations> calculateDistance(double lat, double lng

@@ -14,6 +14,7 @@ import utils.LocoUtils;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -28,7 +29,7 @@ import com.google.gson.annotations.SerializedName;
 @AutoTimestamp
 public class HereNow extends BaseLocations {//implements Serializable {
 	
-	@Id @SerializedName("id")
+	@Id @SerializedName("id") @Expose
 	public String oid;
 	@Override
     public Object getId() {
@@ -42,7 +43,7 @@ public class HereNow extends BaseLocations {//implements Serializable {
         return id.toString();
     }
 	
-    @SerializedName("loc_type")
+    @SerializedName("loc_type") 
     public LocType locType = LocType.FSQ_HERENOW;
     public String getCreatedTime() {
     	return LocoUtils.getFormattedDate( this._getCreated() );
@@ -51,6 +52,7 @@ public class HereNow extends BaseLocations {//implements Serializable {
     	return LocoUtils.getFormattedDate( this._getModified() );
     }
     
+    public String poiId;
 	/*@Id @SerializedName("poiId")
 	public String poiId;
     @Override
@@ -65,28 +67,28 @@ public class HereNow extends BaseLocations {//implements Serializable {
         return id.toString();
     }*/
 	
-	@SerializedName("createdAt")
+	@SerializedName("createdAt") @Expose
 	public Long createdAt;
-	@SerializedName("type")
+	@SerializedName("type") @Expose
 	public String type;
-	@SerializedName("timeZone")
+	@SerializedName("timeZone") @Expose
 	public String timeZone;
 	
-	@SerializedName("user_id")
+	@SerializedName("user_id") @Expose
 	public String user_id;
-	@SerializedName("user_firstName")
+	@SerializedName("user_firstName") @Expose
 	public String user_firstName;
-	@SerializedName("user_photo")
+	@SerializedName("user_photo") @Expose
 	public String user_photo;
 	
-	@SerializedName("user_photo_hres")
+	@SerializedName("user_photo_hres") @Expose
 	public String user_photo_hres;
 	
-	@SerializedName("user_gender")
+	@SerializedName("user_gender") @Expose
 	public String user_gender;
-	@SerializedName("user_homeCity")
+	@SerializedName("user_homeCity") @Expose
 	public String user_homeCity;
-	@SerializedName("user_canonicalUrl")
+	@SerializedName("user_canonicalUrl") @Expose
 	public String user_canonicalUrl;
 	
 	

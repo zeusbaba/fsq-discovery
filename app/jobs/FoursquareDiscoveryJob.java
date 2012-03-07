@@ -136,11 +136,17 @@ public class FoursquareDiscoveryJob extends BaseJob {
 		        	
 		        	poi.herenow.add(hereNow);
 		        	
-		        	hereNow.oid = poi.oid + "_" + hereNow.oid;
-		        	hereNow.lat = poi.lat;
-		        	hereNow.lng = poi.lng;
-		        	hereNow.updateLatlng();
-		        	hereNow.save();
+		        	try {
+			        	//hereNow.oid = poi.oid + "_" + hereNow.oid;
+			        	hereNow.poiId = poi.oid;
+			        	hereNow.lat = poi.lat;
+			        	hereNow.lng = poi.lng;
+			        	hereNow.updateLatlng();
+			        	hereNow.save();
+		        	}
+		        	catch (Exception ex) {
+		        		Logger.warn("Exception while persisting %s | %s", hereNow, ex.toString());
+		        	}
 		        }
 		        
 		        if (poi.herenow.size()>0) {

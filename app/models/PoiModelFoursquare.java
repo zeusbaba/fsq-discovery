@@ -11,6 +11,7 @@ import utils.LocoUtils;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -45,7 +46,7 @@ public class PoiModelFoursquare extends BaseLocations {//implements Serializable
 	//@SerializedName("id")
 	//public String oid;
 	  
-	@Id @SerializedName("id")
+	@Id @SerializedName("id") @Expose
 	public String oid;
     @Override
     public Object getId() {
@@ -60,19 +61,19 @@ public class PoiModelFoursquare extends BaseLocations {//implements Serializable
     }
 	
 	
-	@SerializedName("name")
+	@SerializedName("name") @Expose
 	public String name;
 	
-	@Embedded @SerializedName("location")
+	@Embedded @SerializedName("location") @Expose
 	public PoiLocationModelFoursquare location;
 
-	@Embedded @SerializedName("categories")
+	@Embedded @SerializedName("categories") @Expose
 	public LinkedList<PoiCategoryModelFoursquare> categories;
 	
-	@Embedded @SerializedName("stats")
+	@Embedded @SerializedName("stats") @Expose
 	public Stats stats;
 	
-	@Embedded @SerializedName("herenow")
+	@Embedded @SerializedName("herenow") @Expose
 	public LinkedList<HereNow> herenow;
 	
 	@Override

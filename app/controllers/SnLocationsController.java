@@ -115,7 +115,8 @@ public class SnLocationsController extends ApplicationBaseController {
 	        responseModel.meta = responseMeta;
 	        responseModel.data = dataList;
 	        
-	        renderJSON(responseModel);
+	        //-renderJSON(responseModel);
+	        renderJSON( LocoUtils.getGson().toJson(responseModel) );
 		}
     	catch (Exception ex) {
     	

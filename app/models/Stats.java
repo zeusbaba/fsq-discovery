@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import play.Logger;
 import play.db.jpa.Model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -26,14 +27,14 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Stats implements Serializable {
 
-	@SerializedName("checkinsCount")
+	@SerializedName("checkinsCount") @Expose
 	public Integer checkinsCount;
-	@SerializedName("usersCount")
+	@SerializedName("usersCount") @Expose
 	public Integer usersCount;
-	@SerializedName("tipCount")
+	@SerializedName("tipCount") @Expose
 	public Integer tipCount;
 	
-	@SerializedName("herenowCount")
+	@SerializedName("herenowCount") @Expose
 	public Integer herenowCount;
 	
 	@Override

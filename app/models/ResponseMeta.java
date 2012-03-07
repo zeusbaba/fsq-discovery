@@ -1,6 +1,8 @@
 package models;
 
 
+import com.google.gson.annotations.Expose;
+
 import play.db.jpa.Model;
 
 /***
@@ -15,8 +17,11 @@ import play.db.jpa.Model;
  */
 public class ResponseMeta extends Model {
 
+	@Expose
 	public Integer code;
+	@Expose
 	public String errorType;
+	@Expose
 	public String errorDetail;
 }
 

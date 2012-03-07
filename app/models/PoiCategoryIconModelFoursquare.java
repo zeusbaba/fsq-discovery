@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import play.Logger;
 import play.db.jpa.Model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -25,11 +26,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PoiCategoryIconModelFoursquare {//extends BaseModel {
 
-	@SerializedName("prefix")
+	@SerializedName("prefix") @Expose
 	public String prefix;
-	@SerializedName("sizes")
+	@SerializedName("sizes") @Expose
 	public Integer[] sizes;
-	@SerializedName("name")
+	@SerializedName("name") @Expose
 	public String name;
 	
 	
