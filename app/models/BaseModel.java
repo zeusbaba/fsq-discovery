@@ -8,10 +8,10 @@ import play.modules.morphia.Model.AutoTimestamp;
 import utils.LocoUtils;
 
 /***
- * 	Copyright (c) 2011 WareNinja.com
+ * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
  *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 public class BaseModel extends Model {
 	

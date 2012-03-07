@@ -3,7 +3,7 @@ package jobs;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import models.PoiHerenowModelFoursquare;
+import models.HereNow;
 import models.PoiModelFoursquare;
 
 import org.apache.commons.io.IOUtils;
@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import play.jobs.Job;
 import play.libs.WS;
 import play.libs.F.Promise;
@@ -30,17 +31,20 @@ import utils.LocoUtils;
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
  *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @Wareninja
  */
 
-public class FoursquareUserJob extends BaseJob {
+public class FoursquareDiscoveryJob extends BaseJob {
 
+	static final String CACHE_KEYPREFIX = Play.configuration.getProperty("fsqdiscovery.cache.herenow.keyprefix");
+	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.herenow.ttl");
+	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	//private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
 	private String herenowSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_HERENOW");
 	private HashMap params = new HashMap();
 	private LinkedList<PoiModelFoursquare> poiList = new LinkedList<PoiModelFoursquare>();
-	public FoursquareUserJob() {
+	public FoursquareDiscoveryJob() {
 		baseInit();
 	}
 	public void setReqParams(HashMap params) {
@@ -65,12 +69,26 @@ public class FoursquareUserJob extends BaseJob {
 	public Object doJobWithResult() throws Exception {
 		
         LinkedList<Object> dataList = new LinkedList<Object>();
-        PoiHerenowModelFoursquare hereNow = new PoiHerenowModelFoursquare();
+        HereNow hereNow = new HereNow();
         HttpResponse resp = null;
         WSRequest req = null;
         for (PoiModelFoursquare poi : poiList) {
         	
 	        try {
+	        	
+	        	LinkedList<HereNow> herenow;
+				//String cachePrefix_herenow = Play.configuration.getProperty("elocome.cache.herenow.keyprefix");
+				herenow = (LinkedList<HereNow>)Cache.get(CACHE_KEYPREFIX+poi.oid);
+				if (herenow!=null) {
+					poi.herenow = herenow;
+					//-poiList.set(p, poi);
+					Logger.info("Found in CACHE! # %s", herenow.size());
+					
+					dataList.add(poi);
+					continue;
+				}
+	        	
+	        	
 	        	req = WS.url(
 	    				baseUrl + herenowSearch.replace("/%s/", "/"+poi.oid+"/" )
 	    				+ "?" + LocoUtils.buildUrlParams(params)
@@ -84,7 +102,7 @@ public class FoursquareUserJob extends BaseJob {
 		        JsonObject jsonResp = resp.getJson().getAsJsonObject();
 		        Logger.info("jsonResp : %s", jsonResp);
 	
-		        poi.herenow = new LinkedList<PoiHerenowModelFoursquare>();
+		        poi.herenow = new LinkedList<HereNow>();
 		        
 		        JsonObject respPart = jsonResp.getAsJsonObject("response");
 		        respPart = respPart.getAsJsonObject("hereNow");
@@ -94,9 +112,9 @@ public class FoursquareUserJob extends BaseJob {
 		        	item = items.get(i).getAsJsonObject();
 		        	Logger.info("item #%s : %s", i, item);
 		        	
-		        	hereNow = new PoiHerenowModelFoursquare();
+		        	hereNow = new HereNow();
 		        	//-hereNow = gson.fromJson(item, PoiHerenowModelFoursquare.class);
-		        	hereNow.id = item.has("id")?item.get("id").getAsString():"";
+		        	hereNow.oid = item.has("id")?item.get("id").getAsString():"";
 		        	hereNow.createdAt = item.has("createdAt")?item.get("createdAt").getAsLong():0L;
 		        	hereNow.type = item.has("type")?item.get("type").getAsString():"";
 		        	hereNow.timeZone = item.has("timeZone")?item.get("timeZone").getAsString():"";
@@ -117,14 +135,28 @@ public class FoursquareUserJob extends BaseJob {
 		        	Logger.info("hereNow #%s : %s", i, hereNow);
 		        	
 		        	poi.herenow.add(hereNow);
-		        }   
+		        	
+		        	hereNow.oid = poi.oid + "_" + hereNow.oid;
+		        	hereNow.lat = poi.lat;
+		        	hereNow.lng = poi.lng;
+		        	hereNow.updateLatlng();
+		        	hereNow.save();
+		        }
+		        
+		        if (poi.herenow.size()>0) {
+			        Cache.set(CACHE_KEYPREFIX+poi.oid, poi.herenow, CACHE_TTL);
+			        Logger.info("CACHEd hereNow.size: %s", poi.herenow.size());
+		        }
+		        if (poi.stats!=null) poi.stats.herenowCount = poi.herenow.size();
+		        
+		        dataList.add(poi);
 	    	}
 	    	catch (Exception ex) {
 	    		
 	    		Logger.error("exception : %s", ex.toString());
 	    	}
 	        
-	        dataList.add(poi);
+	        
         }
 		
         return dataList;

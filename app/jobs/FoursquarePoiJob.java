@@ -28,7 +28,7 @@ import utils.LocoUtils;
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
  *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
 public class FoursquarePoiJob extends BaseJob {
@@ -92,6 +92,13 @@ public class FoursquarePoiJob extends BaseJob {
 	        	if (venue.has("hereNow")) {
 	        		fsqPoi.stats.herenowCount = venue.get("hereNow").getAsJsonObject().get("count").getAsInt();
 	        	}
+	        	
+	        	if (fsqPoi!=null && fsqPoi.location!=null) {
+	        		fsqPoi.lat = fsqPoi.location.lat;
+	        		fsqPoi.lng = fsqPoi.location.lng;
+	        		fsqPoi.updateLatlng();
+	        	}
+	        	fsqPoi.save();
 	        	
 	        	dataList.add(fsqPoi);
 	        }   

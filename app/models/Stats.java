@@ -1,6 +1,7 @@
 package models;
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -13,17 +14,17 @@ import com.google.gson.annotations.SerializedName;
 
 
 /***
- * 	Copyright (c) 2011 WareNinja.com
+ * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
  *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
 /*
  * represents search response model
  * for Foursquare
  */
-public class PoiStatsModelFoursquare {
+public class Stats implements Serializable {
 
 	@SerializedName("checkinsCount")
 	public Integer checkinsCount;
@@ -37,7 +38,7 @@ public class PoiStatsModelFoursquare {
 	
 	@Override
 	public String toString() {
-		return "PoiStatsModelFoursquare [checkinsCount=" + checkinsCount
+		return "Stats [checkinsCount=" + checkinsCount
 				+ ", usersCount=" + usersCount + ", tipCount=" + tipCount
 				+ ", herenowCount="+herenowCount
 				+ "]";

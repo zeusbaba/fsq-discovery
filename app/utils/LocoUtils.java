@@ -27,6 +27,12 @@ import com.google.gson.JsonObject;
 
 import play.Logger;
 
+/***
+ * 	Copyright (c) 2011-2012 WareNinja.com
+ *  http://www.WareNinja.com - https://github.com/WareNinja
+ *  	
+ *  Author: yg@wareninja.com / twitter: @WareNinja
+ */
 /*
  * contains common util functions 
  */

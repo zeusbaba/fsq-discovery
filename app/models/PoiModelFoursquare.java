@@ -4,62 +4,85 @@ package models;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-import javax.persistence.Entity;
-
 import play.Logger;
-import play.db.jpa.Model;
+import play.modules.morphia.Model.AutoTimestamp;
+import utils.LocoUtils;
 
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import com.google.gson.annotations.SerializedName;
 
 
 /***
- * 	Copyright (c) 2011 WareNinja.com
+ * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
  *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
 /*
  * represents search response model
  * for Foursquare
  */
-public class PoiModelFoursquare implements Serializable {
+@Entity(value="fsq_locations", noClassnameStored=true)
+@AutoTimestamp
+public class PoiModelFoursquare extends BaseLocations {//implements Serializable {
 
 	public String updated;
     public String created;
 
-    public enum PoiType { FOURSQUARE, GOWALLA };
-	
-	public PoiType poiType = PoiType.FOURSQUARE; 
-	
-	@SerializedName("id")
+    //public enum PoiType { FOURSQUARE};
+    @SerializedName("loc_type")
+	public LocType locType = LocType.FSQ_POI; 
+	public String getCreatedTime() {
+    	return LocoUtils.getFormattedDate( this._getCreated() );
+    }
+    public String getUpdatedTime() {
+    	return LocoUtils.getFormattedDate( this._getModified() );
+    }
+    
+	//@SerializedName("id")
+	//public String oid;
+	  
+	@Id @SerializedName("id")
 	public String oid;
+    @Override
+    public Object getId() {
+        return oid;
+    }
+    @Override
+    protected void setId_(Object id) {
+    	oid = processId_(id).toString();
+    }
+    protected static Object processId_(Object id) {
+        return id.toString();
+    }
+	
 	
 	@SerializedName("name")
 	public String name;
 	
-	@SerializedName("location")
+	@Embedded @SerializedName("location")
 	public PoiLocationModelFoursquare location;
 
-	@SerializedName("categories")
+	@Embedded @SerializedName("categories")
 	public LinkedList<PoiCategoryModelFoursquare> categories;
 	
-	@SerializedName("stats")
-	public PoiStatsModelFoursquare stats;
+	@Embedded @SerializedName("stats")
+	public Stats stats;
 	
-	@SerializedName("herenow")
-	public LinkedList<PoiHerenowModelFoursquare> herenow;
-	
-	//@SerializedName("herenowCount")
-	//public Integer herenowCount;
+	@Embedded @SerializedName("herenow")
+	public LinkedList<HereNow> herenow;
 	
 	@Override
 	public String toString() {
-		return "PoiModelFoursquare [oid=" + oid + ", name=" + name
+		return "PoiModelFoursquare [" +
+				"id=" + oid + ", name=" + name
+				+ ", locType="+locType
 				+ ", location=" + location 
 				+ ", categories="+categories
 				+ ", stats="+stats
-				//+ ", herenowCount="+herenowCount
 				+ ", herenow="+herenow
 				+ "]";
 	}
