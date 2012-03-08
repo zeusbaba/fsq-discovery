@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import models.PoiModelFoursquare;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
@@ -59,12 +61,12 @@ public class LocoUtils {
 	}
 	
 	
-	/*
-	public static LinkedList<Locations> calculateDistance(double lat, double lng
-			, LinkedList<Locations> locationList) {
-		LinkedList<Locations> resultList = new LinkedList<Locations>();
+	
+	public static LinkedList<PoiModelFoursquare> calculateDistance(double lat, double lng
+			, LinkedList<PoiModelFoursquare> locationList) {
+		LinkedList<PoiModelFoursquare> resultList = new LinkedList<PoiModelFoursquare>();
 		
-		for (Locations location : locationList) {
+		for (PoiModelFoursquare location : locationList) {
 			try {
 				location.distance = getDistanceMeters(lat, lng, location.lat, location.lng);
 			}
@@ -80,15 +82,15 @@ public class LocoUtils {
 		
 		return resultList;
 	}
-	static class LocationComparator implements Comparator<Locations> {
+	static class LocationComparator implements Comparator<PoiModelFoursquare> {
 	    @Override
-	    public int compare(Locations o1, Locations o2) {
+	    public int compare(PoiModelFoursquare o1, PoiModelFoursquare o2) {
 	        return (
 	        		Long.valueOf(o1.distance).compareTo( Long.valueOf(o2.distance) ) 
 	        		);
 	    }
 	}
-	*/
+	
 	/**
 	 * Calculate the distance in meters between this point and the one given.
 	 * 

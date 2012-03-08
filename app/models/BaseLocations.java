@@ -33,7 +33,7 @@ public class BaseLocations extends BaseModel {
 	
 	public Double lat;
 	public Double lng;
-	//public long distance;
+	public long distance;
 	
 	@Indexed(IndexDirection.GEO2D)
 	public Double[] latlng;

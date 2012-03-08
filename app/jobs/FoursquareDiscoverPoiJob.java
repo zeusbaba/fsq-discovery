@@ -3,6 +3,7 @@ package jobs;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import models.BaseLocations;
 import models.PoiModelFoursquare;
 
 import org.apache.commons.io.IOUtils;
@@ -31,12 +32,12 @@ import utils.LocoUtils;
  *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
-public class FoursquarePoiJob extends BaseJob {
+public class FoursquareDiscoverPoiJob extends BaseJob {
 
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
 	private HashMap params = new HashMap();
-	public FoursquarePoiJob() {
+	public FoursquareDiscoverPoiJob() {
 		baseInit();
 	}
 	public void setReqParams(HashMap params) {
@@ -47,11 +48,14 @@ public class FoursquarePoiJob extends BaseJob {
 		params.put( "client_id", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_KEY") );
 		params.put( "client_secret", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_SECRET") );
 		params.put("v", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_VERSION") );
+		params.put("intent", "browse" );
 	}
 	
 	@Override
 	public Object doJobWithResult() throws Exception {
 		
+		// https://developer.foursquare.com/docs/venues/search
+		// https://api.foursquare.com/v2/venues/search
 		WSRequest req = WS.url(
 				baseUrl + poiSearch
 				+ "?" + LocoUtils.buildUrlParams(params)
@@ -93,8 +97,9 @@ public class FoursquarePoiJob extends BaseJob {
 	        		fsqPoi.stats.herenowCount = venue.get("hereNow").getAsJsonObject().get("count").getAsInt();
 	        	}
 	        	
-	        	
+	        	fsqPoi.locType = BaseLocations.LocType.FSQ_POI;
 		        try {	
+		        	// // TODO: store only if it doesnt exists!
 		        	if (fsqPoi!=null && fsqPoi.location!=null) {
 		        		fsqPoi.lat = fsqPoi.location.lat;
 		        		fsqPoi.lng = fsqPoi.location.lng;
@@ -107,7 +112,10 @@ public class FoursquarePoiJob extends BaseJob {
 	        	}
 	        	
 	        	dataList.add(fsqPoi);
-	        }   
+	        }  
+	        
+	        // TODO: calculate distance and sort!
+	        //-dataList = LocoUtils.calculateDistance(lat, lng, dataList);
     	}
     	catch (Exception ex) {
     		

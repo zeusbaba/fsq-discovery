@@ -34,7 +34,7 @@ import utils.LocoUtils;
  *  Author: yg@wareninja.com / twitter: @Wareninja
  */
 
-public class FoursquareDiscoveryJob extends BaseJob {
+public class FoursquareDiscoverUsersJob extends BaseJob {
 
 	static final String CACHE_KEYPREFIX = Play.configuration.getProperty("fsqdiscovery.cache.herenow.keyprefix");
 	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.herenow.ttl");
@@ -44,7 +44,7 @@ public class FoursquareDiscoveryJob extends BaseJob {
 	private String herenowSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_HERENOW");
 	private HashMap params = new HashMap();
 	private LinkedList<PoiModelFoursquare> poiList = new LinkedList<PoiModelFoursquare>();
-	public FoursquareDiscoveryJob() {
+	public FoursquareDiscoverUsersJob() {
 		baseInit();
 	}
 	public void setReqParams(HashMap params) {
@@ -88,7 +88,8 @@ public class FoursquareDiscoveryJob extends BaseJob {
 					continue;
 				}
 	        	
-	        	
+	        	// https://developer.foursquare.com/docs/venues/herenow
+				// https://api.foursquare.com/v2/venues/VENUE_ID/herenow
 	        	req = WS.url(
 	    				baseUrl + herenowSearch.replace("/%s/", "/"+poi.oid+"/" )
 	    				+ "?" + LocoUtils.buildUrlParams(params)
@@ -137,6 +138,7 @@ public class FoursquareDiscoveryJob extends BaseJob {
 		        	poi.herenow.add(hereNow);
 		        	
 		        	try {
+		        		// TODO: store only if it doesnt exists!
 			        	//hereNow.oid = poi.oid + "_" + hereNow.oid;
 			        	hereNow.poiId = poi.oid;
 			        	hereNow.lat = poi.lat;
