@@ -91,6 +91,7 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 	        	Logger.info("venue #%s : %s", i, venue);
 	        	
 	        	fsqPoi = gson.fromJson(venue, PoiModelFoursquare.class);
+	        	if (fsqPoi!=null) fsqPoi.updateCategoryIcons();
 	        	Logger.info("fsqPoi #%s : %s", i, fsqPoi);
 	        	
 	        	if (venue.has("hereNow")) {

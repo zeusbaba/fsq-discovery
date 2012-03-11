@@ -35,8 +35,23 @@ public class PoiCategoryModelFoursquare {
 	public String shortName;
 	@SerializedName("primary") @Expose
 	public Boolean isPrimary;
-	@SerializedName("icon") @Expose
+	
+	@SerializedName("icon") //@Expose
 	public PoiCategoryIconModelFoursquare catIcon;
+	
+	@SerializedName("icons") @Expose
+	public LinkedList<String> icons = new LinkedList<String>();
+	public void updateCategoryIcons() {
+		
+		String iconUrl = "";
+		if (catIcon!=null) {
+			
+			for (int i=0; i<catIcon.sizes.length; i++) {
+				iconUrl = catIcon.prefix + catIcon.sizes[i] + catIcon.name;
+				icons.add(iconUrl);
+			}
+		}
+	}
 	
 	public String getImgUrl() {
 		String imgUrl = "";

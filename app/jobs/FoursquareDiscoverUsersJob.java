@@ -116,9 +116,13 @@ public class FoursquareDiscoverUsersJob extends BaseJob {
 		        	hereNow = new HereNow();
 		        	//-hereNow = gson.fromJson(item, PoiHerenowModelFoursquare.class);
 		        	hereNow.oid = item.has("id")?item.get("id").getAsString():"";
-		        	hereNow.createdAt = item.has("createdAt")?item.get("createdAt").getAsLong():0L;
+		        	
 		        	hereNow.type = item.has("type")?item.get("type").getAsString():"";
 		        	hereNow.timeZone = item.has("timeZone")?item.get("timeZone").getAsString():"";
+		        	//-hereNow.createdAt = item.has("createdAt")?item.get("createdAt").getAsLong():0L;
+		        	//-if (item.has("createdAt")) hereNow.setCreatedAt(item.get("createdAt").getAsLong());
+		        	if (item.has("createdAt")) hereNow.setCreatedAt(item.get("createdAt").getAsLong(), hereNow.timeZone);
+		        	 
 		        	if (item.has("user")) {
 		        		item = item.getAsJsonObject("user");
 		        		hereNow.user_id = item.has("id")?item.get("id").getAsString():"";

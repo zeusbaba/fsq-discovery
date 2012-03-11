@@ -11,7 +11,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import models.PoiModelFoursquare;
@@ -196,9 +199,41 @@ public class LocoUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		return sdf.format(date);
 	}
-	 
+	
+	/*public static String getFormattedDateEpoch(long seconds) {
+		
+		try {
+			return getFormattedDate(new Date(
+					(new java.text.SimpleDateFormat ("MM/dd/yyyy HH:mm:ss").parse("01/01/1970 00:00:00").getTime()) 
+					+ (seconds*1000L)
+					));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	public static String getFormattedDateEpoch(long seconds, String timeZone) {
+		
+		try {
+			Date date = Calendar.getInstance(TimeZone.getTimeZone(timeZone)).getTime();
+			date.setTime(seconds*1000L);
+			
+			return getFormattedDate( date.getTime() );
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}*/
+	public static String getFormattedDate(long millis, String timeZone) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+		if (!StringUtils.isEmpty(timeZone)) sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+		return sdf.format( new Date(millis) );
+	}
+	
 	public static String getFormattedDate() {
 		return getFormattedDate(System.currentTimeMillis());
+		// long epoch = System.currentTimeMillis()/1000; /seconds since 
 	}
 	public static String getFormattedDate(long millis) {
 		return getFormattedDate(new Date(millis));

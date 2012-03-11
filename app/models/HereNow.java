@@ -69,6 +69,9 @@ public class HereNow extends BaseLocations {//implements Serializable {
 	
 	@SerializedName("createdAt") @Expose
 	public Long createdAt;
+	@SerializedName("createdAtStr") @Expose
+	public String createdAtStr;
+	
 	@SerializedName("type") @Expose
 	public String type;
 	@SerializedName("timeZone") @Expose
@@ -91,14 +94,26 @@ public class HereNow extends BaseLocations {//implements Serializable {
 	@SerializedName("user_canonicalUrl") @Expose
 	public String user_canonicalUrl;
 	
-	
+	public void setCreatedAt(Long createdAt) {
+		try {
+			this.createdAt = createdAt;
+			if (createdAt!=null && createdAt!=0L) this.createdAtStr = LocoUtils.getFormattedDate(createdAt*1000L);
+		} catch (Exception ex) {}
+	}
+	public void setCreatedAt(Long createdAt, String timeZone) {
+		try {
+			this.createdAt = createdAt;
+			if (createdAt!=null && createdAt!=0L) this.createdAtStr = LocoUtils.getFormattedDate(createdAt*1000L, timeZone);
+		} catch (Exception ex) {}
+	}
 
 	@Override
 	public String toString() {
 		return "HereNow [" +
 				"id=" + oid //+", poiId=" + poiId  
 				+ ", locType="+locType
-				+ ", createdAt="+ createdAt + ", type=" + type + ", timeZone=" + timeZone
+				+ ", createdAt="+ createdAt + ", createdAtStr="+ createdAtStr
+				+ ", type=" + type + ", timeZone=" + timeZone
 				+ ", user_id=" + user_id + ", user_firstName=" + user_firstName
 				+ ", user_photo=" + user_photo + ", user_gender=" + user_gender
 				+ ", user_homeCity=" + user_homeCity + ", user_canonicalUrl="

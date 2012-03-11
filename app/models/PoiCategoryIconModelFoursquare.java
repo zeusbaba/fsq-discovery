@@ -33,7 +33,6 @@ public class PoiCategoryIconModelFoursquare {//extends BaseModel {
 	@SerializedName("name") @Expose
 	public String name;
 	
-	
 	@Override
 	public String toString() {
 		return "PoiCategoryIconModelFoursquare [prefix=" + prefix + ", sizes="

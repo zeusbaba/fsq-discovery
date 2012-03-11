@@ -43,6 +43,7 @@ public class PoiModelFoursquare extends BaseLocations {//implements Serializable
     	return LocoUtils.getFormattedDate( this._getModified() );
     }
     
+    
 	//@SerializedName("id")
 	//public String oid;
 	  
@@ -69,6 +70,14 @@ public class PoiModelFoursquare extends BaseLocations {//implements Serializable
 
 	@Embedded @SerializedName("categories") @Expose
 	public LinkedList<PoiCategoryModelFoursquare> categories;
+	
+	public void updateCategoryIcons() {
+    	if (categories!=null) {
+    		for (PoiCategoryModelFoursquare category: categories) {
+    			category.updateCategoryIcons();
+    		}
+    	}
+    }
 	
 	@Embedded @SerializedName("stats") @Expose
 	public Stats stats;
