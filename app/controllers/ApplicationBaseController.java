@@ -4,6 +4,7 @@ import play.*;
 import play.i18n.Messages;
 import play.mvc.*;
 import token.NoCookieFilter;
+import token.RequestValidator;
 import utils.LocoUtils;
 
 import java.util.*;
@@ -21,17 +22,17 @@ import models.ResponseModel;
  *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
-@With(NoCookieFilter.class)
-//@With({RequestValidator.class,NoCookieFilter.class})
+//@With(NoCookieFilter.class)
+@With({RequestValidator.class,NoCookieFilter.class})
 public class ApplicationBaseController extends Controller {
 
-    
+   /*// just for testing
     @Finally
     static void logResponse() {
         //Logger.info("Response contentType : " + response.contentType);
         //Logger.info("Response contains : " + response.out);
     }
- 
+    */
     
     public static final String RECORDLIMIT_DEFAULT = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_LIMIT_DEFAULT");
     public static final String RECORDLIMIT_MAX = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_LIMIT_MAX");
