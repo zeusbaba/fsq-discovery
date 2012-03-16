@@ -7,6 +7,7 @@ import models.BaseLocations;
 import models.PoiModelFoursquare;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +17,7 @@ import com.google.gson.JsonParser;
 
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import play.jobs.Job;
 import play.libs.WS;
 import play.libs.F.Promise;
@@ -34,6 +36,9 @@ import utils.LocoUtils;
 
 public class FoursquareTrendingPoiJob extends BaseJob {
 
+	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix");
+	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.ttl");
+	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	private String trendingSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_TRENDING");
 	private HashMap params = new HashMap();
@@ -89,20 +94,25 @@ public class FoursquareTrendingPoiJob extends BaseJob {
 	        	}
 	        	
 	        	fsqPoi.locType = BaseLocations.LocType.FSQ_TRENDING;
-		        try {	
-		        	// TODO: store only if it doesnt exists!
-		        	if (fsqPoi!=null && fsqPoi.location!=null) {
-		        		fsqPoi.lat = fsqPoi.location.lat;
-		        		fsqPoi.lng = fsqPoi.location.lng;
-		        		fsqPoi.updateLatlng();
-		        	}
-		        	fsqPoi.save();
-		        }
-	        	catch (Exception ex) {
-	        		Logger.warn("Exception while persisting %s | %s", fsqPoi, ex.toString());
-	        	}
 	        	
-	        	dataList.add(fsqPoi);
+	        	if (fsqPoi!=null && !StringUtils.isEmpty(fsqPoi.oid)) {
+			        try {	
+			        	// TODO: store only if it doesnt exists!
+			        	if (fsqPoi!=null && fsqPoi.location!=null) {
+			        		fsqPoi.lat = fsqPoi.location.lat;
+			        		fsqPoi.lng = fsqPoi.location.lng;
+			        		fsqPoi.updateLatlng();
+			        	}
+			        	fsqPoi.save();
+			        	
+			        	Cache.set(CACHE_KEYPREFIX_SINGLEPOI+fsqPoi.oid, fsqPoi, CACHE_TTL);
+			        }
+		        	catch (Exception ex) {
+		        		Logger.warn("Exception while persisting %s | %s", fsqPoi, ex.toString());
+		        	}
+		        	
+		        	dataList.add(fsqPoi);
+	        	}
 	        }   
     	}
     	catch (Exception ex) {

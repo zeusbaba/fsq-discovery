@@ -42,7 +42,6 @@ public class ApplicationBaseController extends Controller {
 				limit = RECORDLIMIT_DEFAULT;
 			}
 			else {
-				//if (Integer.parseInt(limit) > Integer.parseInt(RECORDLIMIT_MAX)) limit = RECORDLIMIT_DEFAULT;
 				if (LocoUtils.stringToInteger(limit) > LocoUtils.stringToInteger(RECORDLIMIT_MAX)) limit = RECORDLIMIT_DEFAULT;
 			}
 		}
@@ -52,6 +51,25 @@ public class ApplicationBaseController extends Controller {
     	
     	return limit;
     }
+    public static final String RADIUS_DEFAULT = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_RADIUS_DEFAULT", "1000");
+    public static final String RADIUS_MAX = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_RADIUS_MAX", "5000");
+    protected static String verifyRadius(String radius) {
+    	try {
+			if (StringUtils.isEmpty(radius) || !StringUtils.isNumeric(radius)) {
+				radius = RADIUS_DEFAULT;
+			}
+			else {
+				if (LocoUtils.stringToInteger(radius) > LocoUtils.stringToInteger(RADIUS_MAX)) radius = RADIUS_DEFAULT;
+			}
+		}
+		catch (Exception ex) {
+			radius = RADIUS_DEFAULT;
+		}
+    	
+    	return radius;
+    }
+    
+    
     protected static void gotError(ResponseMeta responseMeta, Exception e) {
         
     	ResponseModel responseModel = new ResponseModel();

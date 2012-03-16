@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 import jobs.FoursquareDiscoverPoiJob;
-import jobs.FoursquareDiscoverUsersJob;
+import jobs.FoursquareDiscoverHereNowJob;
 import jobs.FoursquareTrendingPoiJob;
 
 import org.apache.commons.io.IOUtils;
@@ -46,26 +46,29 @@ public class SnLocationsController extends ApplicationBaseController {
 
 	//static final String KEY_PREFIX = "locations_";
 	//static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.ttl");
+	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix");
 	static final String CACHE_KEYPREFIX_NEARBY = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.keyprefix");
 	static final String CACHE_KEYPREFIX_TRENDING = Play.configuration.getProperty("fsqdiscovery.cache.trending-poi.keyprefix");
 	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.ttl");
 	
 	
 	/*
-	 * get&prepare FSQ locations  - Disocver
+	 * get&prepare FSQ locations  - Discover
 	 * 
-	 * GET 	/api/locations/discover/geo:{lat},{lng}/?limit=&uid=&radius=
+	 * GET 	/api/locations/discover/geo:{lat},{lng}/?limit=&appid=&radius=
 	 */
 	public static void discoverFsqLocations(
 			String lat, String lng
 			) {
 		
-		String uid = params._contains("uid") ? params.get("uid") : "";
+		String appid = params._contains("appid") ? params.get("appid") : "";
 		String limit = params._contains("limit") ? params.get("limit") : "";
 		limit = verifyRecordLimit(limit);
 		String radius = params._contains("radius") ? params.get("radius") : "";
+		radius = verifyRadius(radius);
+		String herenow = params._contains("herenow") ? params.get("herenow") : "true";// by default, thats true!
 		
-		Logger.info("uid, lat, lng, limit : %s, %s, %s, %s", uid, lat, lng, limit);
+		Logger.info("appid, lat, lng, limit, herenow : %s, %s, %s, %s, %s \n", appid, lat, lng, limit, herenow);
 		
 		// using Async jobs
 		ResponseModel responseModel = new ResponseModel();
@@ -86,11 +89,13 @@ public class SnLocationsController extends ApplicationBaseController {
 				params.clear();
 				if (!StringUtils.isEmpty(lat)&&!StringUtils.isEmpty(lng)) params.put("ll", lat+","+lng);
 				if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
-				params.put("radius",
+				
+				if (!StringUtils.isEmpty(radius)) params.put("radius", radius);
+				/*params.put("radius",
 						!StringUtils.isEmpty(radius)?
 								radius
 								:Play.configuration.getProperty("fsqdiscovery.discovery.API_LOCO_SEARCHDISTANCE")
-						);
+						);*/
 				FoursquareDiscoverPoiJob mFoursquarePoiJob = new FoursquareDiscoverPoiJob();
 				mFoursquarePoiJob.setReqParams(params);
 				dataList.addAll( (LinkedList<Object>)mFoursquarePoiJob.doJobWithResult() );
@@ -102,21 +107,24 @@ public class SnLocationsController extends ApplicationBaseController {
 				Logger.info("Found in CACHE!!! %s", dataList.size());
 			}
 			
-			// HereNow part
-			params.clear();
-			FoursquareDiscoverUsersJob mFoursquareUserJob = new FoursquareDiscoverUsersJob();
-			mFoursquareUserJob.setReqParams(params);
-			mFoursquareUserJob.setPoiList(dataList);
-			dataList.clear();
-			dataList.addAll( (LinkedList<Object>)mFoursquareUserJob.doJobWithResult() );
-			
+			if ("true".equalsIgnoreCase(herenow)) {
+				// HereNow part
+				params.clear();
+				FoursquareDiscoverHereNowJob mFoursquareDiscoverHereNowJob = new FoursquareDiscoverHereNowJob();
+				mFoursquareDiscoverHereNowJob.setReqParams(params);
+				mFoursquareDiscoverHereNowJob.setPoiList(dataList);
+				dataList.clear();
+				dataList.addAll( (LinkedList<Object>)mFoursquareDiscoverHereNowJob.doJobWithResult() );
+			}
+			else {
+				Logger.info("herenow param is NOT set true, skip loading hereNow!!! herenow: %s", herenow);
+			}
 			
 			response.status = Http.StatusCode.OK;
 	        responseMeta.code = response.status;
 	        responseModel.meta = responseMeta;
 	        responseModel.data = dataList;
 	        
-	        //-renderJSON(responseModel);
 	        renderJSON( LocoUtils.getGson().toJson(responseModel) );
 		}
     	catch (Exception ex) {
@@ -131,18 +139,20 @@ public class SnLocationsController extends ApplicationBaseController {
 	/*
 	 * get&prepare FSQ locations  - Disocver
 	 * 
-	 * GET 	/api/locations/discover/geo:{lat},{lng}/?limit=&uid=&radius=
+	 * GET 	/api/locations/discover/geo:{lat},{lng}/?limit=&appid=&radius=
 	 */
 	public static void trendingFsqLocations(
 			String lat, String lng
 			) {
 		
-		String uid = params._contains("uid") ? params.get("uid") : "";
+		String appid = params._contains("appid") ? params.get("appid") : "";
 		String limit = params._contains("limit") ? params.get("limit") : "";
 		limit = verifyRecordLimit(limit);
 		String radius = params._contains("radius") ? params.get("radius") : "";
+		radius = verifyRadius(radius);
+		String herenow = params._contains("herenow") ? params.get("herenow") : "true";// by default, thats true!
 		
-		Logger.info("uid, lat, lng, limit, radius : %s, %s, %s, %s", uid, lat, lng, limit, radius);
+		Logger.info("appid, lat, lng, limit, radius : %s, %s, %s, %s, %s \n", appid, lat, lng, limit, radius, herenow);
 		
 		// using Async jobs
 		ResponseModel responseModel = new ResponseModel();
@@ -163,11 +173,13 @@ public class SnLocationsController extends ApplicationBaseController {
 				params.clear();
 				if (!StringUtils.isEmpty(lat)&&!StringUtils.isEmpty(lng)) params.put("ll", lat+","+lng);
 				if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
-				params.put("radius",
+				
+				if (!StringUtils.isEmpty(radius)) params.put("radius", radius);
+				/*params.put("radius",
 						!StringUtils.isEmpty(radius)?
 								radius
 								:Play.configuration.getProperty("fsqdiscovery.trending.API_LOCO_SEARCHDISTANCE")
-						);
+						);*/
 				FoursquareTrendingPoiJob mFoursquareTrendingPoiJob = new FoursquareTrendingPoiJob();
 				mFoursquareTrendingPoiJob.setReqParams(params);
 				dataList.addAll( (LinkedList<Object>)mFoursquareTrendingPoiJob.doJobWithResult() );
@@ -179,13 +191,77 @@ public class SnLocationsController extends ApplicationBaseController {
 				Logger.info("Found in CACHE!!! %s", dataList.size());
 			}
 			
+			if ("true".equalsIgnoreCase(herenow)) {
+				// HereNow part
+				params.clear();
+				FoursquareDiscoverHereNowJob mFoursquareDiscoverHereNowJob = new FoursquareDiscoverHereNowJob();
+				mFoursquareDiscoverHereNowJob.setReqParams(params);
+				mFoursquareDiscoverHereNowJob.setPoiList(dataList);
+				dataList.clear();
+				dataList.addAll( (LinkedList<Object>)mFoursquareDiscoverHereNowJob.doJobWithResult() );
+			}
+			else {
+				Logger.info("herenow param is NOT set true, skip loading hereNow!!! herenow: %s", herenow);
+			}
+			
+			response.status = Http.StatusCode.OK;
+	        responseMeta.code = response.status;
+	        responseModel.meta = responseMeta;
+	        responseModel.data = dataList;
+	        
+	        renderJSON( LocoUtils.getGson().toJson(responseModel) );
+		}
+    	catch (Exception ex) {
+    	
+    		responseMeta.code = Http.StatusCode.INTERNAL_ERROR;
+    		gotError(responseMeta, ex);
+	        
+	        renderJSON(responseModel);
+    	}
+	}
+	
+	/*
+	 * get&prepare HereNow using provided FSQ location IDS  - Discover HereNow
+	 * 
+# # REQUIRED params ?ids=<comma separated ids> / ids  are the id's of foursquare locations
+# # optional params / example: limit=12
+# example: http://localhost:9000/api/locations/herenow/?limit=10&ids=4a737bf8f964a52091dc1fe3,4b8aa3e1f964a520e77632e3
+	 * GET 	/api/locations/herenow/?ids=<id1, id2>&limit=<max_number_of_records>&appid=<appid>
+	 */
+	public static void discoverHereNow() {// TODO: implement this properly!!!
+		
+		String appid = params._contains("appid") ? params.get("appid") : "";
+		String limit = params._contains("limit") ? params.get("limit") : "";
+		limit = verifyRecordLimit(limit);
+		String ids = params._contains("ids") ? params.get("ids") : "";
+		
+		Logger.info("appid, limit, ids : %s, %s, %s \n", appid, limit, ids);
+		
+		// using Async jobs
+		ResponseModel responseModel = new ResponseModel();
+		ResponseMeta responseMeta = new ResponseMeta();
+		LinkedList<Object> dataList = new LinkedList<Object>();
+		
+		HashMap params = new HashMap(); 
+		
+		try { 
+			
+			params.clear();
+			//-if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
+			FoursquareDiscoverPoiJob mFoursquarePoiJob = new FoursquareDiscoverPoiJob();
+			mFoursquarePoiJob.setIds(ids);
+			mFoursquarePoiJob.setReqParams(params);
+			dataList.addAll( (LinkedList<Object>)mFoursquarePoiJob.doJobWithResult() );
+			
+			
 			// HereNow part
 			params.clear();
-			FoursquareDiscoverUsersJob mFoursquareUserJob = new FoursquareDiscoverUsersJob();
-			mFoursquareUserJob.setReqParams(params);
-			mFoursquareUserJob.setPoiList(dataList);
+			if (!StringUtils.isEmpty(limit)) params.put("limit", limit);
+			FoursquareDiscoverHereNowJob mFoursquareDiscoverHereNowJob = new FoursquareDiscoverHereNowJob();
+			mFoursquareDiscoverHereNowJob.setReqParams(params);
+			mFoursquareDiscoverHereNowJob.setPoiList(dataList);
 			dataList.clear();
-			dataList.addAll( (LinkedList<Object>)mFoursquareUserJob.doJobWithResult() );
+			dataList.addAll( (LinkedList<Object>)mFoursquareDiscoverHereNowJob.doJobWithResult() );
 			
 			
 			response.status = Http.StatusCode.OK;
@@ -193,7 +269,6 @@ public class SnLocationsController extends ApplicationBaseController {
 	        responseModel.meta = responseMeta;
 	        responseModel.data = dataList;
 	        
-	        //-renderJSON(responseModel);
 	        renderJSON( LocoUtils.getGson().toJson(responseModel) );
 		}
     	catch (Exception ex) {

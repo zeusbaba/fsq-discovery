@@ -12,12 +12,19 @@ GET     /                                       TokenController.invalidCall()
 GET     /favicon.ico                            404
 
 # example: http://localhost:9000/api/locations/discover/geo:59.92415298000001,10.75919532/
-# # optional params ?limit=12&uid=123&radius=500
+# # optional params: limit, appid, radius, herenow -> example: ?limit=12&appid=123&radius=500&herenow=true
 GET 	/api/locations/discover/geo:{lat},{lng}/		SnLocationsController.discoverFsqLocations
 
 # example: http://localhost:9000/api/locations/trending/geo:59.92415298000001,10.75919532/
-# # optional params ?limit=12&uid=123&radius=500
+# # optional params: limit, appid, radius, herenow -> example: ?limit=12&appid=123&radius=500&herenow=true
 GET 	/api/locations/trending/geo:{lat},{lng}/		SnLocationsController.trendingFsqLocations
+
+
+
+# # REQUIRED params ?ids=<comma separated ids> / ids  are the id's of foursquare locations
+# # optional params limit=12
+# example: http://localhost:9000/api/locations/herenow/?limit=10&ids=4a737bf8f964a52091dc1fe3,4b8aa3e1f964a520e77632e3
+GET 	/api/locations/herenow/		SnLocationsController.discoverHereNow
 
 
 # Map static resources from the /app/public folder to the /public path
