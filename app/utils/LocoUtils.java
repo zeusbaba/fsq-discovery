@@ -251,7 +251,7 @@ public class LocoUtils {
 		for (Map.Entry<String, String> param : params.entrySet()) {
 			result += param.getKey() +"=" + param.getValue() + "&";
 		}
-		result = result.substring(0, result.lastIndexOf("&"));
+		if (result.contains("&")) result = result.substring(0, result.lastIndexOf("&"));
 		
 		return result;
 	}

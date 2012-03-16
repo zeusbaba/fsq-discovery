@@ -39,7 +39,7 @@ import utils.LocoUtils;
 public class FoursquareDiscoverPoiJob extends BaseJob {
 
 	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix");
-	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.ttl");
+	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.ttl");
 	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");

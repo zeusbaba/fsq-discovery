@@ -46,7 +46,6 @@ public class SnLocationsController extends ApplicationBaseController {
 
 	//static final String KEY_PREFIX = "locations_";
 	//static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.ttl");
-	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix");
 	static final String CACHE_KEYPREFIX_NEARBY = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.keyprefix");
 	static final String CACHE_KEYPREFIX_TRENDING = Play.configuration.getProperty("fsqdiscovery.cache.trending-poi.keyprefix");
 	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.nearby-poi.ttl");
@@ -115,6 +114,23 @@ public class SnLocationsController extends ApplicationBaseController {
 				mFoursquareDiscoverHereNowJob.setPoiList(dataList);
 				dataList.clear();
 				dataList.addAll( (LinkedList<Object>)mFoursquareDiscoverHereNowJob.doJobWithResult() );
+				
+				// remove items which doesn't have any hereNow in it!!!
+				try {
+					PoiModelFoursquare fsqPoi = null;
+					LinkedList<Object> dataListFiltered = new LinkedList<Object>();
+					for (Object obj:dataList) {
+						fsqPoi = (PoiModelFoursquare)obj;
+						
+						//if (fsqPoi.herenow==null || fsqPoi.herenow.size()==0) dataList.remove(obj);
+						if (fsqPoi.herenow!=null && fsqPoi.herenow.size()>0) dataListFiltered.add(obj);
+					}
+					Logger.info("dataList.size(): %s | dataListFiltered.size(): %s", dataList.size(), dataListFiltered.size());
+					dataList.clear();
+					dataList.addAll(dataListFiltered);
+				} catch (Exception ex) {
+					Logger.warn("exception whilte filtering out hereNow : %s", ex.toString());
+				}
 			}
 			else {
 				Logger.info("herenow param is NOT set true, skip loading hereNow!!! herenow: %s", herenow);
