@@ -1,8 +1,8 @@
 package models;
 
-import com.google.gson.annotations.Expose;
+import java.io.Serializable;
 
-import play.db.jpa.Model;
+import com.google.gson.annotations.Expose;
 
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
@@ -11,7 +11,7 @@ import play.db.jpa.Model;
  *  Author: yg@wareninja.com / twitter: @WareNinja
  */
 
-public class ResponseModel extends Model {
+public class ResponseModel implements Serializable {
 	
 	@Expose
     public ResponseMeta meta;

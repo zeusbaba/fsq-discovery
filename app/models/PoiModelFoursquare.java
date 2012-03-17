@@ -28,8 +28,9 @@ import com.google.gson.annotations.SerializedName;
  */
 @Entity(value="fsq_locations", noClassnameStored=true)
 @AutoTimestamp
-public class PoiModelFoursquare extends BaseLocations {//implements Serializable {
-
+public class PoiModelFoursquare extends BaseLocations implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	public String updated;
     public String created;
 

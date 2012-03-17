@@ -1,5 +1,7 @@
 package models;
 
+import java.io.Serializable;
+
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
@@ -13,7 +15,7 @@ import utils.LocoUtils;
  *  	
  *  Author: yg@wareninja.com / twitter: @WareNinja
  */
-public class BaseModel extends Model {
+public class BaseModel extends Model implements Serializable {//{
 	
 	public String createdTime;
     public String updatedTime;

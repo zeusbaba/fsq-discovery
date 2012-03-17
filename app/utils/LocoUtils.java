@@ -55,6 +55,15 @@ public class LocoUtils {
 		    .excludeFieldsWithoutExposeAnnotation()
 		    .create();
 	}
+	public static Gson getGsonWithPrettyPrinting() {
+		return new GsonBuilder()
+		    .excludeFieldsWithModifiers( new int[] { 
+		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		} )
+		    .excludeFieldsWithoutExposeAnnotation()
+		    .setPrettyPrinting()
+		    .create();
+	}
 	public static Gson getGsonSimple() {
 		return new GsonBuilder()
 		    .excludeFieldsWithModifiers( new int[] { 
@@ -62,7 +71,14 @@ public class LocoUtils {
 		    		} )
 		    .create();
 	}
-	
+	public static Gson getGsonSimpleWithPrettyPrinting() {
+		return new GsonBuilder()
+		    .excludeFieldsWithModifiers( new int[] { 
+		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		} )
+		    .setPrettyPrinting()
+		    .create();
+	}
 	
 	
 	public static LinkedList<PoiModelFoursquare> calculateDistance(double lat, double lng

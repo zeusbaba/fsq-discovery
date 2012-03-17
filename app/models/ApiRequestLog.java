@@ -26,9 +26,10 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(value="api_request_log", noClassnameStored=true)
 @AutoTimestamp
-public class ApiRequestLog extends Model {
+public class ApiRequestLog extends Model implements Serializable {//{
+	private static final long serialVersionUID = 1L;
 	
-	@Id //@SerializedName("id") @Expose
+	@Id @SerializedName("id") @Expose
 	public String oid;
 	@Override
     public Object getId() {
@@ -42,10 +43,13 @@ public class ApiRequestLog extends Model {
         return id.toString();
     }
     
-	
+    @Expose
     public String requestTime;
+    @Expose
     public String requestUrl;
+    @Expose
     public String clientIp;
+    @Expose
     public String userAgent;
     //public Map requestHeaders = new HashMap();
     
@@ -55,6 +59,9 @@ public class ApiRequestLog extends Model {
 		return "ApiRequestLog [oid=" + oid + ", requestTime=" + requestTime
 				+ ", requestUrl=" + requestUrl + ", clientIp=" + clientIp
 				+ ", userAgent=" + userAgent + "]";
+	}
+	public String toJsonString() {
+		return "" + LocoUtils.getGsonWithPrettyPrinting().toJson(this);
 	}
 }
 

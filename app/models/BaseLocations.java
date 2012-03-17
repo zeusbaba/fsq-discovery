@@ -40,13 +40,6 @@ public class BaseLocations extends BaseModel {
 	public void updateLatlng() {
 		this.latlng = new Double[] { lat, lng};
 	}
-
-	/*
-	//TODO: @Indexed(value=IndexDirection.ASC, name="upc", unique=true, dropDups=false)
-	public String name;
-	public String description;
-	public String address;
-	*/
 	
 	public BaseLocations() {
 	}

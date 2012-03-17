@@ -1,6 +1,7 @@
 package models;
 
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ import com.google.gson.annotations.SerializedName;
  * represents search response model
  * for Foursquare
  */
-public class PoiLocationModelFoursquare {//extends BaseModel {
+public class PoiLocationModelFoursquare implements Serializable {//{//extends BaseModel {
 
 	//public enum Type { VENUES, USERS };
 	//public Type type;

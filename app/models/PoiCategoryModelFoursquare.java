@@ -1,6 +1,7 @@
 package models;
 
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ import com.google.gson.annotations.SerializedName;
  * represents search response model
  * for Foursquare
  */
-public class PoiCategoryModelFoursquare {
+public class PoiCategoryModelFoursquare implements Serializable {//{
 	
 	@SerializedName("id") @Expose
 	public String oid;

@@ -38,8 +38,8 @@ import utils.LocoUtils;
 
 public class FoursquareDiscoverPoiJob extends BaseJob {
 
-	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix");
-	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.ttl");
+	static final String CACHE_KEYPREFIX_SINGLEPOI = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.keyprefix", "single_poi_");
+	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.single-poi.ttl", "2h");
 	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
@@ -81,13 +81,14 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 		LinkedList<Object> dataList = new LinkedList<Object>();
 		PoiModelFoursquare fsqPoi = null;
 		
-		if (idsList.size() > 0) {
+		if (idsList.size() > 0) {// check & load each fsq-POI
 			
 			for (String fsqId:idsList) {
 				
 				try {
 					
-					fsqPoi = (PoiModelFoursquare)Cache.get(CACHE_KEYPREFIX_SINGLEPOI+fsqId);
+					//fsqPoi = (PoiModelFoursquare)Cache.get(CACHE_KEYPREFIX_SINGLEPOI+fsqId);
+					fsqPoi = Cache.get(CACHE_KEYPREFIX_SINGLEPOI+fsqId, PoiModelFoursquare.class);
 					if (fsqPoi!=null) {
 						
 						Logger.info("Found in CACHE! : %s", fsqPoi);
@@ -125,16 +126,17 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 		        	fsqPoi.locType = BaseLocations.LocType.FSQ_POI;
 		        	
 		        	if (fsqPoi!=null && !StringUtils.isEmpty(fsqPoi.oid)) {
-				        try {	
+				        try {
+				        	Cache.set(CACHE_KEYPREFIX_SINGLEPOI+fsqPoi.oid, fsqPoi, CACHE_TTL);
+				        	
 				        	// TODO: using mongoDB is temporary, we should make this parametric enable/disable
-				        	if (fsqPoi!=null && fsqPoi.location!=null) {
+				        	//if (fsqPoi!=null && fsqPoi.location!=null) {
+				        	if (fsqPoi.location!=null) {
 				        		fsqPoi.lat = fsqPoi.location.lat;
 				        		fsqPoi.lng = fsqPoi.location.lng;
 				        		fsqPoi.updateLatlng();
 				        	}
 				        	fsqPoi.save();
-				        	
-				        	Cache.set(CACHE_KEYPREFIX_SINGLEPOI+fsqPoi.oid, fsqPoi, CACHE_TTL);
 				        }
 			        	catch (Exception ex) {
 			        		Logger.warn("Exception while persisting %s | %s", fsqPoi, ex.toString());
@@ -152,7 +154,7 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 			// TODO: calculate distance and sort!
 	        //-dataList = LocoUtils.calculateDistance(lat, lng, dataList);
 		}
-		else {
+		else {// load complete set from 4sq
 		    
 	        try {
 	        	
@@ -191,15 +193,16 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 		        	
 		        	if (fsqPoi!=null && !StringUtils.isEmpty(fsqPoi.oid)) {
 				        try {	
+				        	Cache.set(CACHE_KEYPREFIX_SINGLEPOI+fsqPoi.oid, fsqPoi, CACHE_TTL);
+				        	
 				        	// TODO: using mongoDB is temporary, we should make this parametric enable/disable
-				        	if (fsqPoi!=null && fsqPoi.location!=null) {
+				        	//if (fsqPoi!=null && fsqPoi.location!=null) {
+				        	if (fsqPoi.location!=null) {
 				        		fsqPoi.lat = fsqPoi.location.lat;
 				        		fsqPoi.lng = fsqPoi.location.lng;
 				        		fsqPoi.updateLatlng();
 				        	}
 				        	fsqPoi.save();
-				        	
-				        	Cache.set(CACHE_KEYPREFIX_SINGLEPOI+fsqPoi.oid, fsqPoi, CACHE_TTL);
 				        }
 			        	catch (Exception ex) {
 			        		Logger.warn("Exception while persisting %s | %s", fsqPoi, ex.toString());

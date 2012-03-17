@@ -36,8 +36,8 @@ import utils.LocoUtils;
 
 public class FoursquareDiscoverHereNowJob extends BaseJob {
 
-	static final String CACHE_KEYPREFIX_HERENOW = Play.configuration.getProperty("fsqdiscovery.cache.herenow.keyprefix");
-	static final String CACHE_TTL = Play.configuration.getProperty("fsqdiscovery.cache.herenow.ttl");
+	static final String CACHE_KEYPREFIX_HERENOW = Play.configuration.getProperty("fsqdiscovery.cache.herenow.keyprefix", "single_poi_herenow_");
+	static final String CACHE_TTL_HERENOW = Play.configuration.getProperty("fsqdiscovery.cache.herenow.ttl", "30mn");
 	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
 	//private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
@@ -56,6 +56,10 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 			poiList.add( (PoiModelFoursquare)obj );
 		}
 	}
+	public void setPoi(Object obj) {
+		poiList.add( (PoiModelFoursquare)obj );
+	}
+	
 	private void baseInit() {
 		// with initial params
 		params.put( "client_id", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_KEY") );
@@ -76,9 +80,8 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
         	
 	        try {
 	        	
-	        	LinkedList<HereNow> herenow;
-				//String cachePrefix_herenow = Play.configuration.getProperty("elocome.cache.herenow.keyprefix");
-				herenow = (LinkedList<HereNow>)Cache.get(CACHE_KEYPREFIX_HERENOW+poi.oid);
+	        	//LinkedList<HereNow> herenow = (LinkedList<HereNow>)Cache.get(CACHE_KEYPREFIX_HERENOW+poi.oid);
+	        	LinkedList<HereNow> herenow = Cache.get(CACHE_KEYPREFIX_HERENOW+poi.oid, LinkedList.class);
 				if (herenow!=null) {
 					poi.herenow = new LinkedList<HereNow>();
 					poi.herenow.addAll( herenow );
@@ -157,7 +160,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        }
 		        
 		        if (poi.herenow.size()>0) {
-			        Cache.set(CACHE_KEYPREFIX_HERENOW+poi.oid, poi.herenow, CACHE_TTL);
+			        Cache.set(CACHE_KEYPREFIX_HERENOW+poi.oid, poi.herenow, CACHE_TTL_HERENOW);
 			        Logger.info("CACHEd hereNow.size: %s", poi.herenow.size());
 		        }
 		        if (poi.stats!=null) poi.stats.herenowCount = poi.herenow.size();

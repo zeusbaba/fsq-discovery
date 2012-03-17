@@ -63,6 +63,9 @@ public class RequestValidator extends Controller
 			apiRequestLog.userAgent = request.headers.containsKey("user-agent")?request.headers.get("user-agent").value():"<empty>";
 			apiRequestLog.requestUrl = request.url;
 			apiRequestLog.save();
+			
+			//Logger.info("apiRequestLog : %s", LocoUtils.getGsonWithPrettyPrinting().toJson(apiRequestLog));
+			Logger.info("apiRequestLog : %s", apiRequestLog.toJsonString());
 		}
 		catch (Exception ex) {
 			Logger.warn("exception while tracking ApiRequestLog : %s", ex.toString());

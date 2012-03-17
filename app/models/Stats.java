@@ -22,10 +22,10 @@ import com.google.gson.annotations.SerializedName;
  */
 
 /*
- * represents search response model
- * for Foursquare
+ * 
  */
 public class Stats implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@SerializedName("checkinsCount") @Expose
 	public Integer checkinsCount;

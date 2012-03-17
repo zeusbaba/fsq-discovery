@@ -1,6 +1,7 @@
 package models;
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -24,7 +25,7 @@ import com.google.gson.annotations.SerializedName;
  * represents search response model
  * for Foursquare
  */
-public class PoiCategoryIconModelFoursquare {//extends BaseModel {
+public class PoiCategoryIconModelFoursquare implements Serializable {//{//extends BaseModel {
 
 	@SerializedName("prefix") @Expose
 	public String prefix;

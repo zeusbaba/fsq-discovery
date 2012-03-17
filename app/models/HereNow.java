@@ -27,7 +27,8 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(value="fsq_herenow", noClassnameStored=true)
 @AutoTimestamp
-public class HereNow extends BaseLocations {//implements Serializable {
+public class HereNow extends BaseLocations implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	@Id @SerializedName("id") @Expose
 	public String oid;

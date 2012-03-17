@@ -34,6 +34,14 @@ public class ApplicationBaseController extends Controller {
     }
     */
     
+	// param names used for API calls
+	public static final String PARAM_APPID = Play.configuration.getProperty("fsqdiscovery.apiparam.appid");
+	public static final String PARAM_LIMIT = Play.configuration.getProperty("fsqdiscovery.apiparam.limit");
+	public static final String PARAM_RADIUS = Play.configuration.getProperty("fsqdiscovery.apiparam.radius");
+	public static final String PARAM_HERENOW = Play.configuration.getProperty("fsqdiscovery.apiparam.herenow");
+	public static final String PARAM_IDS = Play.configuration.getProperty("fsqdiscovery.apiparam.ids");
+	
+	
     public static final String RECORDLIMIT_DEFAULT = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_LIMIT_DEFAULT");
     public static final String RECORDLIMIT_MAX = Play.configuration.getProperty("fsqdiscovery.discovery.API_LOADITEMS_LIMIT_MAX");
     protected static String verifyRecordLimit(String limit) {
@@ -81,7 +89,8 @@ public class ApplicationBaseController extends Controller {
         responseModel.meta = responseMeta;
         responseModel.data = null;//new LinkedList<BaseModel>();
         
-        renderJSON(responseModel);
+        //-renderJSON(responseModel);
+        renderJSON( LocoUtils.getGson().toJson(responseModel) );
     }
     
     public static void invalidCall() {
@@ -99,6 +108,7 @@ public class ApplicationBaseController extends Controller {
         responseModel.meta = responseMeta;
         responseModel.data = null;
         
-        renderJSON(responseModel);
+        //-renderJSON(responseModel);
+        renderJSON( LocoUtils.getGson().toJson(responseModel) );
 	}
 }
