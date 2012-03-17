@@ -75,7 +75,7 @@ public class FoursquareTrendingPoiJob extends BaseJob {
 	        
 	        
 	        JsonObject jsonResp = resp.getJson().getAsJsonObject();
-	        Logger.info("jsonResp : %s", jsonResp);
+	        //-Logger.info("jsonResp : %s", jsonResp);
 
 	        JsonObject respPart = jsonResp.getAsJsonObject("response");
 	        JsonArray venues = respPart.getAsJsonArray("venues");
@@ -83,7 +83,7 @@ public class FoursquareTrendingPoiJob extends BaseJob {
 	        PoiModelFoursquare fsqPoi = null;
 	        for (int i=0; i<venues.size(); i++) {
 	        	venue = venues.get(i).getAsJsonObject();
-	        	Logger.info("venue #%s : %s", i, venue);
+	        	//-Logger.info("venue #%s : %s", i, venue);
 	        	
 	        	fsqPoi = gson.fromJson(venue, PoiModelFoursquare.class);
 	        	if (fsqPoi!=null) fsqPoi.updateCategoryIcons();

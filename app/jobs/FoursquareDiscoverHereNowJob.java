@@ -105,7 +105,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		    	Gson gson = new GsonBuilder().create();
 		        
 		        JsonObject jsonResp = resp.getJson().getAsJsonObject();
-		        Logger.info("jsonResp : %s", jsonResp);
+		        //Logger.info("jsonResp : %s", jsonResp);
 	
 		        poi.herenow = new LinkedList<HereNow>();
 		        
@@ -115,7 +115,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        JsonObject item;
 		        for (int i=0; i<items.size(); i++) {
 		        	item = items.get(i).getAsJsonObject();
-		        	Logger.info("item #%s : %s", i, item);
+		        	//-Logger.info("item #%s : %s", i, item);
 		        	
 		        	hereNow = new HereNow();
 		        	//-hereNow = gson.fromJson(item, PoiHerenowModelFoursquare.class);
@@ -141,7 +141,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        		}
 		        	}
 		        	
-		        	Logger.info("hereNow #%s : %s", i, hereNow);
+		        	//-Logger.info("hereNow #%s : %s", i, hereNow);
 		        	
 		        	poi.herenow.add(hereNow);
 		        	
