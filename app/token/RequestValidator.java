@@ -1,6 +1,9 @@
 package token;
 
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,16 +35,16 @@ import utils.LocoUtils;
 //@With(NoCookieFilter.class)
 public class RequestValidator extends Controller
 {
-	//-private static final String TOKEN_HEADER = Play.configuration.getProperty("elocome.token.header-name");
-	//-private static final String TOKEN_PARAM = Play.configuration.getProperty("elocome.token.parameter-name");
-	//-static final String CACHE_TTL = Play.configuration.getProperty("elocome.cache.token.ttl");
+	
+	static final String APPID_PARAM = Play.configuration.getProperty("fsqdiscovery.apiparam.appid", "appid");
+	static final String CACHE_KEYPREFIX_APPID = Play.configuration.getProperty("fsqdiscovery.cache.appid.keyprefix");
+	static final String CACHE_TTL_APPID = Play.configuration.getProperty("fsqdiscovery.cache.appid.ttl");
+	static List<String> appIds = null;
 	
 	@Before
 	static void checkRequest() {
 		
-		//-String tokenParamValue = params.get(TOKEN_PARAM);
-		//-Header tokenHeader = request.headers.get(TOKEN_HEADER);
-		//-Logger.info("tokenHeader: %s | tokenParamValue: %s", tokenHeader, tokenParamValue);
+		String appIdParamValue = params._contains(APPID_PARAM)?params.get(APPID_PARAM):"no-appid";
 		
 		Header acceptHeader = request.headers.containsKey("accept")?request.headers.get("accept"):null;
 		
@@ -53,19 +56,26 @@ public class RequestValidator extends Controller
 		// , user-agent=[Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.45 Safari/535.19]
 		//, accept-encoding=[gzip,deflate,sdch], accept-charset=[ISO-8859-1,utf-8;q=0.7,*;q=0.3]}
 
-		
+		ApiRequestLog apiRequestLog = new ApiRequestLog();
 		try {
-			ApiRequestLog apiRequestLog = new ApiRequestLog();
-			apiRequestLog.oid = ""+UUID.randomUUID();
+			
+			if (appIds==null) {
+				//appIds = new LinkedList<String>();
+				String appIdsConfig = Play.configuration.getProperty("fsqdiscovery.appids");
+				if (appIdsConfig!=null) appIds = Arrays.asList(appIdsConfig.split(","));
+			}
+			
+			apiRequestLog.oid = ""+System.currentTimeMillis();//+"_"+ UUID.randomUUID();
 			//apiRequestLog.requestHeaders.putAll( request.headers );
+			apiRequestLog.appId = appIdParamValue;
 			apiRequestLog.requestTime = LocoUtils.getFormattedDate();
 			apiRequestLog.clientIp = request.remoteAddress;
 			apiRequestLog.userAgent = request.headers.containsKey("user-agent")?request.headers.get("user-agent").value():"<empty>";
 			apiRequestLog.requestUrl = request.url;
-			apiRequestLog.save();
 			
-			//Logger.info("apiRequestLog : %s", LocoUtils.getGsonWithPrettyPrinting().toJson(apiRequestLog));
 			Logger.info("apiRequestLog : %s", apiRequestLog.toJsonString());
+			
+			apiRequestLog.save();// save to mongo
 		}
 		catch (Exception ex) {
 			Logger.warn("exception while tracking ApiRequestLog : %s", ex.toString());
@@ -75,9 +85,10 @@ public class RequestValidator extends Controller
 		ResponseMeta responseMeta = new ResponseMeta();
 		
 		if (acceptHeader!=null
-				&& !acceptHeader.value().contains("application/json")
-				&& !acceptHeader.value().contains("*/*")
-				&& !acceptHeader.value().contains("*.*")
+				&& (!acceptHeader.value().contains("application/json") 
+						&& !acceptHeader.value().contains("*/*")
+						&& !acceptHeader.value().contains("*.*")
+						)
 				) {
 			response.status = Http.StatusCode.BAD_REQUEST;
 			
@@ -87,6 +98,19 @@ public class RequestValidator extends Controller
             responseModel.meta = responseMeta;
 
             //-renderJSON(responseModel);
+            renderJSON( LocoUtils.getGson().toJson(responseModel) );
+		}
+		
+		Logger.info("request appId: %s , pre-defined appIds: %s", apiRequestLog.appId, appIds);
+		if (appIds!=null && !appIds.contains(apiRequestLog.appId)) {
+			
+			response.status = Http.StatusCode.BAD_REQUEST;
+			
+			responseMeta.code = Http.StatusCode.BAD_REQUEST;
+            responseMeta.errorType = Messages.get("http.statuscode."+response.status);//"BAD_REQUEST";
+            responseMeta.errorDetail = "appid parameter is required in every call!!!";
+            responseModel.meta = responseMeta;
+            
             renderJSON( LocoUtils.getGson().toJson(responseModel) );
 		}
 		

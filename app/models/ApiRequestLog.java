@@ -44,6 +44,8 @@ public class ApiRequestLog extends Model implements Serializable {//{
     }
     
     @Expose
+    public String appId;
+    @Expose
     public String requestTime;
     @Expose
     public String requestUrl;
@@ -56,7 +58,10 @@ public class ApiRequestLog extends Model implements Serializable {//{
     
 	@Override
 	public String toString() {
-		return "ApiRequestLog [oid=" + oid + ", requestTime=" + requestTime
+		return "ApiRequestLog [" +
+				"oid=" + oid
+				+ ", appId=" + appId
+				+ ", requestTime=" + requestTime
 				+ ", requestUrl=" + requestUrl + ", clientIp=" + clientIp
 				+ ", userAgent=" + userAgent + "]";
 	}
