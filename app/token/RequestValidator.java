@@ -36,7 +36,8 @@ import utils.LocoUtils;
 public class RequestValidator extends Controller
 {
 	
-	static final String APPID_PARAM = Play.configuration.getProperty("fsqdiscovery.apiparam.appid", "appid");
+	public static final String PARAM_APPID = Play.configuration.getProperty("fsqdiscovery.apiparam.appid", "appid");
+	
 	static final String CACHE_KEYPREFIX_APPID = Play.configuration.getProperty("fsqdiscovery.cache.appid.keyprefix");
 	static final String CACHE_TTL_APPID = Play.configuration.getProperty("fsqdiscovery.cache.appid.ttl");
 	static List<String> appIds = null;
@@ -44,7 +45,7 @@ public class RequestValidator extends Controller
 	@Before
 	static void checkRequest() {
 		
-		String appIdParamValue = params._contains(APPID_PARAM)?params.get(APPID_PARAM):"no-appid";
+		String appIdParamValue = params._contains(PARAM_APPID)?params.get(PARAM_APPID):"empty-appid";
 		
 		Header acceptHeader = request.headers.containsKey("accept")?request.headers.get("accept"):null;
 		
@@ -61,7 +62,7 @@ public class RequestValidator extends Controller
 			
 			if (appIds==null) {
 				//appIds = new LinkedList<String>();
-				String appIdsConfig = Play.configuration.getProperty("fsqdiscovery.appids");
+				String appIdsConfig = Play.configuration.getProperty("fsqdiscovery.appids", null);
 				if (appIdsConfig!=null) appIds = Arrays.asList(appIdsConfig.split(","));
 			}
 			
