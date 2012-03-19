@@ -131,6 +131,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        		item = item.getAsJsonObject("user");
 		        		hereNow.user_id = item.has("id")?item.get("id").getAsString():"";
 		        		hereNow.user_firstName = item.has("firstName")?item.get("firstName").getAsString():"";
+		        		hereNow.user_lastName = item.has("lastName")?item.get("lastName").getAsString():"";
 		        		hereNow.user_photo = item.has("photo")?item.get("photo").getAsString():"";
 		        		hereNow.user_gender = item.has("gender")?item.get("gender").getAsString():"";
 		        		hereNow.user_homeCity = item.has("homeCity")?item.get("homeCity").getAsString():"";
@@ -140,7 +141,7 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        			hereNow.user_photo_hres = hereNow.user_photo.replace("/userpix_thumbs/", "/userpix/");
 		        		}
 		        	}
-		        	
+
 		        	//-Logger.info("hereNow #%s : %s", i, hereNow);
 		        	
 		        	poi.herenow.add(hereNow);

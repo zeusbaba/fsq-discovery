@@ -82,6 +82,8 @@ public class HereNow extends BaseLocations implements Serializable {
 	public String user_id;
 	@SerializedName("user_firstName") @Expose
 	public String user_firstName;
+	@SerializedName("user_lastName") @Expose
+	public String user_lastName;
 	@SerializedName("user_photo") @Expose
 	public String user_photo;
 	

@@ -69,7 +69,7 @@ public class PoiModelFoursquare extends BaseLocations implements Serializable {
 	@Embedded @SerializedName("location") @Expose
 	public PoiLocationModelFoursquare location;
 
-	@Embedded @SerializedName("categories") @Expose
+	@Embedded @SerializedName("categories") //-@Expose
 	public LinkedList<PoiCategoryModelFoursquare> categories;
 	
 	public void updateCategoryIcons() {
@@ -80,7 +80,7 @@ public class PoiModelFoursquare extends BaseLocations implements Serializable {
     	}
     }
 	
-	@Embedded @SerializedName("stats") @Expose
+	@Embedded @SerializedName("stats") //-@Expose
 	public Stats stats;
 	
 	@Embedded @SerializedName("herenow") @Expose
