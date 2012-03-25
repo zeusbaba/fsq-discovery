@@ -57,7 +57,10 @@ public class FoursquareDiscoverPoiJob extends BaseJob {
 		params.put( "client_id", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_KEY") );
 		params.put( "client_secret", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_SECRET") );
 		params.put("v", Play.configuration.getProperty("fsqdiscovery.discovery.FSQ_APP_VERSION") );
-		params.put("intent", "browse" );
+		//params.put("intent", "browse" );
+		params.put("intent"
+				, Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH_INTENT", "checkin") 
+				);
 	}
 	
 	public void setIdsList(List<String> reqIdsList) {
