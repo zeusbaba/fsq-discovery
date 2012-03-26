@@ -68,8 +68,9 @@ public class SnLocationsController extends ApplicationBaseController {
 		String radius = params._contains(PARAM_RADIUS) ? params.get(PARAM_RADIUS) : "";
 		radius = verifyRadius(radius);
 		String herenow = params._contains(PARAM_HERENOW) ? params.get(PARAM_HERENOW) : "true";// by default : true
+		String query = params._contains(PARAM_QUERY) ? params.get(PARAM_QUERY) : "";
 		
-		Logger.info("PARAMS -> appid:%s ; lat,lng:%s,%s ; radius:%s ; limit:%s ; herenow:%s", appid, lat, lng, radius, limit, herenow);
+		Logger.info("PARAMS -> appid:%s ; lat,lng:%s,%s ; radius:%s ; limit:%s ; herenow:%s ; query:%s", appid, lat, lng, radius, limit, herenow, query);
 
 		ResponseModel responseModel = new ResponseModel();
 		ResponseMeta responseMeta = new ResponseMeta();
@@ -78,6 +79,7 @@ public class SnLocationsController extends ApplicationBaseController {
 		HashMap params = new HashMap(); 
 		String cacheKey = CACHE_KEYPREFIX_NEARBY+"geo:"+lat+","+lng;
 		if (!StringUtils.isEmpty(limit)) cacheKey+="|"+limit;
+		if (!StringUtils.isEmpty(query)) cacheKey+="|"+query;
 		
 		try { 
 			
@@ -97,12 +99,26 @@ public class SnLocationsController extends ApplicationBaseController {
 								radius
 								:Play.configuration.getProperty("fsqdiscovery.discovery.API_LOCO_SEARCHDISTANCE")
 						);*/
+				if (!StringUtils.isEmpty(query)) params.put(PARAM_QUERY, query);
+				
 				FoursquareDiscoverPoiJob mFoursquarePoiJob = new FoursquareDiscoverPoiJob();
 				mFoursquarePoiJob.setReqParams(params);
 				dataList.addAll( (LinkedList<Object>)mFoursquarePoiJob.doJobWithResult() );
 				
-				Logger.info("adding to cache!!! %s", dataList.size());
-				Cache.set(cacheKey, dataList, CACHE_TTL_NEARBY);
+				if (dataList.size()>0) {
+					Logger.info("adding to cache!!! %s", dataList.size());
+					Cache.set(cacheKey, dataList, CACHE_TTL_NEARBY);	
+				}
+				else {
+					Logger.info("NO NEED to cache, dataList.size(): 0");
+					
+					response.status = Http.StatusCode.OK;
+			        responseMeta.code = response.status;
+			        responseModel.meta = responseMeta;
+			        responseModel.data = dataList;
+			        
+			        renderJSON( LocoUtils.getGson().toJson(responseModel) );
+				}
 			}
 			else {
 				Logger.info("Found in CACHE!!! %s", dataList.size());
@@ -168,8 +184,9 @@ public class SnLocationsController extends ApplicationBaseController {
 		String radius = params._contains(PARAM_RADIUS) ? params.get(PARAM_RADIUS) : "";
 		radius = verifyRadius(radius);
 		String herenow = params._contains(PARAM_HERENOW) ? params.get(PARAM_HERENOW) : "true";// by default, thats true!
+		String query = params._contains(PARAM_QUERY) ? params.get(PARAM_QUERY) : "";
 		
-		Logger.info("PARAMS -> appid:%s ; lat,lng:%s,%s ; radius:%s ; limit:%s ; herenow:%s", appid, lat, lng, radius, limit, herenow);
+		Logger.info("PARAMS -> appid:%s ; lat,lng:%s,%s ; radius:%s ; limit:%s ; herenow:%s ; query:%s", appid, lat, lng, radius, limit, herenow, query);
 		
 		// using Async jobs
 		ResponseModel responseModel = new ResponseModel();
@@ -179,6 +196,7 @@ public class SnLocationsController extends ApplicationBaseController {
 		HashMap params = new HashMap(); 
 		String cacheKey = CACHE_KEYPREFIX_TRENDING+"geo:"+lat+","+lng;
 		if (!StringUtils.isEmpty(limit)) cacheKey+="|"+limit;
+		if (!StringUtils.isEmpty(query)) cacheKey+="|"+query;
 		
 		try { 
 			
@@ -198,12 +216,28 @@ public class SnLocationsController extends ApplicationBaseController {
 								radius
 								:Play.configuration.getProperty("fsqdiscovery.trending.API_LOCO_SEARCHDISTANCE")
 						);*/
+				if (!StringUtils.isEmpty(query)) params.put(PARAM_QUERY, query);
+				
 				FoursquareTrendingPoiJob mFoursquareTrendingPoiJob = new FoursquareTrendingPoiJob();
 				mFoursquareTrendingPoiJob.setReqParams(params);
 				dataList.addAll( (LinkedList<Object>)mFoursquareTrendingPoiJob.doJobWithResult() );
 				
-				Logger.info("adding to cache!!! %s", dataList.size());
-				Cache.set(cacheKey, dataList, CACHE_TTL_TRENDING);
+				//Logger.info("adding to cache!!! %s", dataList.size());
+				//Cache.set(cacheKey, dataList, CACHE_TTL_TRENDING);
+				if (dataList.size()>0) {
+					Logger.info("adding to cache!!! %s", dataList.size());
+					Cache.set(cacheKey, dataList, CACHE_TTL_TRENDING);	
+				}
+				else {
+					Logger.info("NO NEED to cache, dataList.size(): 0");
+					
+					response.status = Http.StatusCode.OK;
+			        responseMeta.code = response.status;
+			        responseModel.meta = responseMeta;
+			        responseModel.data = dataList;
+			        
+			        renderJSON( LocoUtils.getGson().toJson(responseModel) );
+				}
 			}
 			else {
 				Logger.info("Found in CACHE!!! %s", dataList.size());
