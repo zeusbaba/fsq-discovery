@@ -37,11 +37,23 @@ import play.Logger;
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
- *  	
  *  Author: yg@wareninja.com / twitter: @WareNinja
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
+
 /*
- * contains common util functions 
+ * Common util functions 
  */
 public class LocoUtils {
 
@@ -50,7 +62,7 @@ public class LocoUtils {
 	public static Gson getGson() {
 		return new GsonBuilder()
 		    .excludeFieldsWithModifiers( new int[] { 
-		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		Modifier.STATIC, Modifier.TRANSIENT 
 		    		} )
 		    .excludeFieldsWithoutExposeAnnotation()
 		    .create();
@@ -58,7 +70,7 @@ public class LocoUtils {
 	public static Gson getGsonWithPrettyPrinting() {
 		return new GsonBuilder()
 		    .excludeFieldsWithModifiers( new int[] { 
-		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		Modifier.STATIC, Modifier.TRANSIENT 
 		    		} )
 		    .excludeFieldsWithoutExposeAnnotation()
 		    .setPrettyPrinting()
@@ -67,14 +79,14 @@ public class LocoUtils {
 	public static Gson getGsonSimple() {
 		return new GsonBuilder()
 		    .excludeFieldsWithModifiers( new int[] { 
-		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		Modifier.STATIC, Modifier.TRANSIENT 
 		    		} )
 		    .create();
 	}
 	public static Gson getGsonSimpleWithPrettyPrinting() {
 		return new GsonBuilder()
 		    .excludeFieldsWithModifiers( new int[] { 
-		    		Modifier.STATIC, Modifier.TRANSIENT//, Modifier.FINAL 
+		    		Modifier.STATIC, Modifier.TRANSIENT 
 		    		} )
 		    .setPrettyPrinting()
 		    .create();
@@ -93,11 +105,9 @@ public class LocoUtils {
 				Logger.warn("exception -> %s", ex.toString());
 			}
 			resultList.add(location);
-			//Logger.info("location : %s", location);
 		}
 		
 		Collections.sort(resultList, new LocationComparator());
-		//Collections.reverse(resultList);
 		
 		return resultList;
 	}
@@ -216,30 +226,6 @@ public class LocoUtils {
 		return sdf.format(date);
 	}
 	
-	/*public static String getFormattedDateEpoch(long seconds) {
-		
-		try {
-			return getFormattedDate(new Date(
-					(new java.text.SimpleDateFormat ("MM/dd/yyyy HH:mm:ss").parse("01/01/1970 00:00:00").getTime()) 
-					+ (seconds*1000L)
-					));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
-	public static String getFormattedDateEpoch(long seconds, String timeZone) {
-		
-		try {
-			Date date = Calendar.getInstance(TimeZone.getTimeZone(timeZone)).getTime();
-			date.setTime(seconds*1000L);
-			
-			return getFormattedDate( date.getTime() );
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-	}*/
 	public static String getFormattedDate(long millis, String timeZone) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);

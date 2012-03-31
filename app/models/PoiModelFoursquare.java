@@ -18,13 +18,23 @@ import com.google.gson.annotations.SerializedName;
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
- *  	
  *  Author: yg@wareninja.com / twitter: @WareNinja
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 /*
- * represents search response model
- * for Foursquare
+ * 
  */
 @Entity(value="fsq_locations", noClassnameStored=true)
 @AutoTimestamp
@@ -34,7 +44,6 @@ public class PoiModelFoursquare extends BaseLocations implements Serializable {
 	public String updated;
     public String created;
 
-    //public enum PoiType { FOURSQUARE};
     @SerializedName("loc_type")
 	public LocType locType = LocType.FSQ_POI; 
 	public String getCreatedTime() {
@@ -43,11 +52,7 @@ public class PoiModelFoursquare extends BaseLocations implements Serializable {
     public String getUpdatedTime() {
     	return LocoUtils.getFormattedDate( this._getModified() );
     }
-    
-    
-	//@SerializedName("id")
-	//public String oid;
-	  
+      
 	@Id @SerializedName("id") @Expose
 	public String oid;
     @Override

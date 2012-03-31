@@ -21,8 +21,19 @@ import com.google.gson.annotations.SerializedName;
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
- *  	
  *  Author: yg@wareninja.com / twitter: @WareNinja
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 @Entity(value="fsq_herenow", noClassnameStored=true)
@@ -54,19 +65,6 @@ public class HereNow extends BaseLocations implements Serializable {
     }
     
     public String poiId;
-	/*@Id @SerializedName("poiId")
-	public String poiId;
-    @Override
-    public Object getId() {
-        return poiId;
-    }
-    @Override
-    protected void setId_(Object id) {
-    	poiId = processId_(id).toString();
-    }
-    protected static Object processId_(Object id) {
-        return id.toString();
-    }*/
 	
 	@SerializedName("createdAt") @Expose
 	public Long createdAt;
@@ -123,28 +121,5 @@ public class HereNow extends BaseLocations implements Serializable {
 				+ user_canonicalUrl + ", user_photo_hres=" + user_photo_hres
 				+ "]";
 	}
-	
-/*
-hereNow: {
-count: 3
-items: [
-	{
-		id: "4f4e48b8e4b0ed369457a3ec"
-		createdAt: 1330530488
-		type: "checkin"
-		timeZone: "America/New_York"
-		user: {
-				id: "1230423"
-				firstName: "Roy"
-				photo: "https://img-s.foursquare.com/userpix_thumbs/KPIEFYVZ4F5EOOUK.jpg"
-				gender: "male"
-				homeCity: "New York, NY"
-				canonicalUrl: "https://foursquare.com/roychung"
-			}
-	},
-	...
-	]
-}
- */
 }
 

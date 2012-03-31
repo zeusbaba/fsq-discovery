@@ -30,8 +30,19 @@ import utils.LocoUtils;
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
- *  	
- *  Author: yg@wareninja.com / twitter: @Wareninja
+ *  Author: yg@wareninja.com / twitter: @WareNinja
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 public class FoursquareDiscoverHereNowJob extends BaseJob {
@@ -40,7 +51,6 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 	static final String CACHE_TTL_HERENOW = Play.configuration.getProperty("fsqdiscovery.cache.herenow.ttl", "30mn");
 	
 	private String baseUrl = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_BASE_URL");
-	//private String poiSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_SEARCH");
 	private String herenowSearch = Play.configuration.getProperty("fsqdiscovery.discovery.API_FOURSQUARE_POI_HERENOW");
 	private HashMap params = new HashMap();
 	private LinkedList<PoiModelFoursquare> poiList = new LinkedList<PoiModelFoursquare>();
@@ -80,12 +90,10 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
         	
 	        try {
 	        	
-	        	//LinkedList<HereNow> herenow = (LinkedList<HereNow>)Cache.get(CACHE_KEYPREFIX_HERENOW+poi.oid);
 	        	LinkedList<HereNow> herenow = Cache.get(CACHE_KEYPREFIX_HERENOW+poi.oid, LinkedList.class);
 				if (herenow!=null) {
 					poi.herenow = new LinkedList<HereNow>();
 					poi.herenow.addAll( herenow );
-					//-poiList.set(p, poi);
 					Logger.info("Found in CACHE! # %s", herenow.size());
 					
 					dataList.add(poi);
@@ -147,8 +155,6 @@ public class FoursquareDiscoverHereNowJob extends BaseJob {
 		        	poi.herenow.add(hereNow);
 		        	
 		        	try {
-		        		// TODO: store only if it doesnt exists!
-			        	//hereNow.oid = poi.oid + "_" + hereNow.oid;
 			        	hereNow.poiId = poi.oid;
 			        	hereNow.lat = poi.lat;
 			        	hereNow.lng = poi.lng;

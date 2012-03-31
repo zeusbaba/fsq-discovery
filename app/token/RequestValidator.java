@@ -28,11 +28,21 @@ import utils.LocoUtils;
 /***
  * 	Copyright (c) 2011-2012 WareNinja.com
  *  http://www.WareNinja.com - https://github.com/WareNinja
- *  	
- *  Author: yg@wareninja.com
+ *  Author: yg@wareninja.com / twitter: @WareNinja
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
-//@With(NoCookieFilter.class)
 public class RequestValidator extends Controller
 {
 	
@@ -50,12 +60,6 @@ public class RequestValidator extends Controller
 		Header acceptHeader = request.headers.containsKey("accept")?request.headers.get("accept"):null;
 		
 		Logger.info("Request headers : %s", request.headers);
-		
-		 //Request headers : 
-		 //{cache-control=[max-age=0], connection=[keep-alive], host=[localhost:9000]
-		 //, accept-language=[en-US,en;q=0.8], accept=[text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]
-		// , user-agent=[Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.45 Safari/535.19]
-		//, accept-encoding=[gzip,deflate,sdch], accept-charset=[ISO-8859-1,utf-8;q=0.7,*;q=0.3]}
 
 		ApiRequestLog apiRequestLog = new ApiRequestLog();
 		try {
